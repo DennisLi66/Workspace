@@ -1,0 +1,10 @@
+Users should not be able to login past about, features, home page, etc
+
+Create an Employee account vs Admin account
+  Admins should give power to employees
+
+Messageboard
+Direct Chat
+Write Announcements
+
+Password Recovery Via Admins
