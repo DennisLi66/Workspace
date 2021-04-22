@@ -1,4 +1,15 @@
+<% if (!fName) { %>
 <a href='/'> Home </a>
+<% } %>
+<% if (!fName){ %>
 <a href='/register'> Register </a>
+<% } %>
+<% if (!fName) { %>
 <a href="/login"> Login </a>
+<% } %>
+<% if (fName) { %>
+<a href="/dashboard"> Dashboard </a>
+<% } %>
+<% if (fName){ %>
 <a href="/logout"> Logout </a>
+<% } %>

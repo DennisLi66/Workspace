@@ -45,7 +45,7 @@ app.get("/dashboard", function(req, res) {
   if (req.cookies.userData) {
     res.render("dashboard", {
       banner: "Workspace: Dashboard",
-      fName: null
+      fName: req.cookies.userData.fName
     })
   } else {
     res.redirect("/");
@@ -54,16 +54,20 @@ app.get("/dashboard", function(req, res) {
 
 app.route("/register")
   .get(function(req, res) {
-    //FIX THIS: Add logged in checking
     // FIX THIS: Add features to box
-    res.render("register", {
-      banner: 'Workspace: Registration',
-      errorMsg: null,
-      posiMsg: null
-    })
+    if (req.cookies.userData) {
+      res.redirect("/dashboard")
+    } else {
+      res.render("register", {
+        banner: 'Workspace: Registration',
+        errorMsg: null,
+        posiMsg: null,
+        fName: null
+      })
+    }
   })
   .post(function(req, res) {
-    var fName = req.body.fname;
+    var fName = req.body.fName;
     var lName = req.body.lname;
     var email = req.body.email;
     var password = req.body.password;
@@ -72,7 +76,8 @@ app.route("/register")
       res.render("register", {
         banner: 'Workspace: Registration',
         errorMsg: 'Your passwords did not match.',
-        posiMsg: null
+        posiMsg: null,
+        fName: null
       })
     } else {
       bcrypt.hash(password, 10, function(e2rr, hash) {
@@ -111,12 +116,16 @@ app.route("/register")
 app.route("/login")
   .get(function(req, res) {
     //FIX THIS: Add logged in checking
-    res.render("login", {
-      banner: 'Workspace: Login',
-      errorMsg: null,
-      posiMsg: null,
-      fName: null
-    })
+    if (req.cookies.userData) {
+      res.redirect("/dashboard")
+    } else {
+      res.render("login", {
+        banner: 'Workspace: Login',
+        errorMsg: null,
+        posiMsg: null,
+        fName: null
+      })
+    }
   })
   .post(function(req, res) {
     var email = req.body.email;
@@ -146,13 +155,14 @@ app.route("/login")
               res.render("login", {
                 banner: "MoviesMan: Login",
                 errorMsg: err3,
-                posiMsg: null
+                posiMsg: null,
+                fName: null
               })
 
             } else if (rresult) {
               console.log(results[0].username + " logged in.");
               let cookieObj = {
-                fname: results[0].firstName,
+                fName: results[0].firstName,
                 lname: results[0].lastName,
                 id: results[0].userID,
                 temporary: false
