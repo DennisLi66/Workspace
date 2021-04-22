@@ -29,6 +29,7 @@ connection.connect(); //FIX THIS: write dotenv file
 //homepage
 app.get("/", function(req, res) {
   //if user logged in redirect to dashboard
+  //FIX THIS: Add logged in checking
   res.render('home', {
     banner: 'Workspace: Welcome to Workspace!'
   })
@@ -42,10 +43,12 @@ app.get("/dashboard", function(req, res) {
 
 app.route("/register")
   .get(function(req, res) {
+    //FIX THIS: Add logged in checking
     // FIX THIS: Add features to box
     res.render("register", {
       banner: 'Workspace: Registration',
-      errorMsg: null
+      errorMsg: null,
+      posiMsg: null
     })
   })
   .post(function(req, res) {
@@ -57,27 +60,33 @@ app.route("/register")
     if (password !== cPassword) {
       res.render("register", {
         banner: 'Workspace: Registration',
-        errorMsg: 'Your passwords did not match.'
+        errorMsg: 'Your passwords did not match.',
+        posiMsg: null
       })
     } else {
       bcrypt.hash(password, 10, function(e2rr, hash) {
         if (e2rr) {
           res.render("register", {
             banner: 'Workspace: Registration',
-            errorMsg: e2rr
+            errorMsg: e2rr,
+            posiMsg: null
           });
         } else {
           // FIX THIS: Add a better error message div
           var iQuery = 'INSERT INTO users (firstName,lastName,email,pswrd) VALUES (?,?,?,?)';
-          connection.query(iQuery, [fName,lName,email,hash] ,function(err, results, fields) {
-            if (err){
+          connection.query(iQuery, [fName, lName, email, hash], function(err, results, fields) {
+            if (err) {
               res.render("register", {
                 banner: 'Workspace: Registration',
-                errorMsg: err //FIX THIS: Read error and make it more human legible
+                errorMsg: err, //FIX THIS: Read error and make it more human legible
+                posiMsg: null
               });
-            }
-            else{
-              res.redirect("/login");
+            } else {
+              res.render("login", {
+                banner: 'Workspace: Login',
+                errorMsg: null,
+                posiMsg: "You've created a new Workspace account! You can now use it to sign in."
+              })
             }
           })
         }
@@ -86,12 +95,69 @@ app.route("/register")
   })
 
 app.route("/login")
-  .get(function(res, res) {
+  .get(function(req, res) {
+    //FIX THIS: Add logged in checking
     res.render("login", {
-      banner: 'Workspace: Login'
+      banner: 'Workspace: Login',
+      errorMsg: null,
+      posiMsg: null
     })
   })
-  .post()
+  .post(function(req, res) {
+    var email = req.body.email;
+    var password = req.body.password;
+    var sQuery = "select * from users WHERE email = ?";
+    connection.query(sQuery, [email], function(err, results, fields) {
+      if (err) {
+        res.render("login", {
+          banner: 'Workspace: Login',
+          errorMsg: err,
+          posiMsg: null
+        })
+      } else {
+        if (results.length == 0) {
+          res.render("login", {
+            banner: 'Workspace: Login',
+            errorMsg: 'That email and password combination do not exist.',
+            posiMsg: null
+          })
+        } else {
+          var resPass = results[0].pswrd;
+          bcrypt.compare(password, resPass, function(err3, rresult) {
+            if (err3) {
+              console.log(err3);
+              res.render("login", {
+                banner: "MoviesMan: Login",
+                errorMsg: err3,
+                posiMsg: null
+              })
+
+            } else if (rresult) {
+              console.log(results[0].username + " logged in.");
+              let cookieObj = {
+                fname: results[0].firstName,
+                lname: results[0].lastName,
+                id: results[0].userID,
+                temporary: false
+              }
+              res.cookie("userData", cookieObj, {
+                expires: new Date(900000 + Date.now())
+              });
+              res.redirect("/dashboard");
+            } else {
+              console.log("Logging in failed.")
+              res.render("login", {
+                banner: 'Workspace: Login',
+                errorMsg: 'That email and password combination do not exist.',
+                posiMsg: null
+              })
+
+            }
+          });
+        }
+      }
+    })
+  })
 
 app.get("/about", function(req, res) {
 
