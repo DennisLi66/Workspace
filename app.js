@@ -30,15 +30,26 @@ connection.connect(); //FIX THIS: write dotenv file
 app.get("/", function(req, res) {
   //if user logged in redirect to dashboard
   //FIX THIS: Add logged in checking
-  res.render('home', {
-    banner: 'Workspace: Welcome to Workspace!'
-  })
+  if (req.cookies.userData) {
+    res.redirect("/dashboard")
+  } else {
+    res.render('home', {
+      banner: 'Workspace: Welcome to Workspace!',
+      posiMsg: null,
+      fName: null
+    })
+  }
 })
 
 app.get("/dashboard", function(req, res) {
-  res.render("dashboard", {
-    banner: "Workspace: Dashboard"
-  })
+  if (req.cookies.userData) {
+    res.render("dashboard", {
+      banner: "Workspace: Dashboard",
+      fName: null
+    })
+  } else {
+    res.redirect("/");
+  }
 })
 
 app.route("/register")
@@ -69,7 +80,8 @@ app.route("/register")
           res.render("register", {
             banner: 'Workspace: Registration',
             errorMsg: e2rr,
-            posiMsg: null
+            posiMsg: null,
+            fName: null
           });
         } else {
           // FIX THIS: Add a better error message div
@@ -79,13 +91,15 @@ app.route("/register")
               res.render("register", {
                 banner: 'Workspace: Registration',
                 errorMsg: err, //FIX THIS: Read error and make it more human legible
-                posiMsg: null
+                posiMsg: null,
+                fName: null
               });
             } else {
               res.render("login", {
                 banner: 'Workspace: Login',
                 errorMsg: null,
-                posiMsg: "You've created a new Workspace account! You can now use it to sign in."
+                posiMsg: "You've created a new Workspace account! You can now use it to sign in.",
+                fName: null
               })
             }
           })
@@ -100,7 +114,8 @@ app.route("/login")
     res.render("login", {
       banner: 'Workspace: Login',
       errorMsg: null,
-      posiMsg: null
+      posiMsg: null,
+      fName: null
     })
   })
   .post(function(req, res) {
@@ -112,14 +127,16 @@ app.route("/login")
         res.render("login", {
           banner: 'Workspace: Login',
           errorMsg: err,
-          posiMsg: null
+          posiMsg: null,
+          fName: null
         })
       } else {
         if (results.length == 0) {
           res.render("login", {
             banner: 'Workspace: Login',
             errorMsg: 'That email and password combination do not exist.',
-            posiMsg: null
+            posiMsg: null,
+            fName: null
           })
         } else {
           var resPass = results[0].pswrd;
@@ -149,7 +166,8 @@ app.route("/login")
               res.render("login", {
                 banner: 'Workspace: Login',
                 errorMsg: 'That email and password combination do not exist.',
-                posiMsg: null
+                posiMsg: null,
+                fName: null
               })
 
             }
@@ -163,6 +181,19 @@ app.get("/about", function(req, res) {
 
 })
 
+app.get("/logout", function(req, res) {
+  if (req.cookies.userData) {
+    res.clearCookie('userData');
+    res.render('home', {
+      banner: 'Workspace: Welcome to Workspace!',
+      posiMsg: 'You have successfully logged out.',
+      fName: null
+    })
+  } else {
+    console.log("User isn't even logged in.");
+    res.redirect("/");
+  }
+})
 
 app.get("/profile/:userid", function(req, res) {})
 
