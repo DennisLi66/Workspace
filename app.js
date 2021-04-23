@@ -26,7 +26,7 @@ connection.connect(); //FIX THIS: write dotenv file
 
 
 
-//homepage
+//Not Logged in
 app.get("/", function(req, res) {
   //if user logged in redirect to dashboard
   //FIX THIS: Add logged in checking
@@ -38,17 +38,6 @@ app.get("/", function(req, res) {
       posiMsg: null,
       fName: null
     })
-  }
-})
-
-app.get("/dashboard", function(req, res) {
-  if (req.cookies.userData) {
-    res.render("dashboard", {
-      banner: "Workspace: Dashboard",
-      fName: req.cookies.userData.fName
-    })
-  } else {
-    res.redirect("/");
   }
 })
 
@@ -188,8 +177,71 @@ app.route("/login")
   })
 
 app.get("/about", function(req, res) {
+  //FIX THIS: Add an about page
+})
+
+//Logged in
+app.get("/dashboard", function(req, res) {
+  if (req.cookies.userData) {
+    res.render("dashboard", {
+      banner: "Workspace: Dashboard",
+      fName: req.cookies.userData.fName
+    })
+  } else {
+    res.redirect("/");
+  }
+})
+
+app.route("/dashboard/create")
+  .get(function(req, res) {
+  if (req.cookies.userData) {
+    res.render('createcompany', {
+      banner: 'Workspace: Company Creation',
+      fName: req.cookies.userData.fName,
+      userID: req.cookies.userData.id,
+      errorMsg: null
+    })
+  } else {
+    res.redirect("/");
+  }
+})
+  .post(function(req,res) {
+    if (req.cookies.userData){
+      var iQuery =
+      `
+      INSERT INTO company (cName) VALUES (?);
+      SELECT last_insert_id() as jamble;
+      INSERT INTO employeesInCompany(userID,companyID,power) VALUES (?,last_insert_id(),True)
+      `;
+      connection.query(iQuery,[req.body.cname,req.cookies.userData.id],function(error,results,fields){
+        if (error){
+          res.render('createcompany', {
+            banner: 'Workspace: Company Creation',
+            fName: req.cookies.userData.fName,
+            userID: req.cookies.userData.id,
+            errorMsg: error
+          })
+        }
+        else{
+          //get results
+          res.redirect("/dashboard/company/" + results[1][0].jamble)
+        }
+      })
+    }
+    else{
+      res.redirect("/");
+    }
+  })
+
+app.get("/dashboard/join", function(req, res) {
 
 })
+
+app.route("/dashboard/company/:cnumber")
+  .get(function(req, res) {
+    console.log(req.params.cnumber);
+    res.redirect("/");
+  })
 
 app.get("/logout", function(req, res) {
   if (req.cookies.userData) {

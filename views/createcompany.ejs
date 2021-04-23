@@ -1,0 +1,13 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+<% if (errorMsg){ %>
+<%= errorMsg %>
+<% } %>
+<form action='/dashboard/create' method='POST'>
+  <label for='cname'>What is the name of your company? </label>
+  <input type="text" name='cname' required>
+  <input type='hidden' name='userID' value='<%= userID %>'>
+  <button type="submit" class="btn btn-light">Create Company</button>
+</form>
+
+<%- include('partials/footer') %>
