@@ -56,7 +56,7 @@ app.route("/register")
     }
   })
   .post(function(req, res) {
-    var fName = req.body.fName;
+    var firstName = req.body.firstName;
     var lName = req.body.lname;
     var email = req.body.email;
     var password = req.body.password;
@@ -80,7 +80,7 @@ app.route("/register")
         } else {
           // FIX THIS: Add a better error message div
           var iQuery = 'INSERT INTO users (firstName,lastName,email,pswrd) VALUES (?,?,?,?)';
-          connection.query(iQuery, [fName, lName, email, hash], function(err, results, fields) {
+          connection.query(iQuery, [firstName, lName, email, hash], function(err, results, fields) {
             if (err) {
               res.render("register", {
                 banner: 'Workspace: Registration',
@@ -237,33 +237,43 @@ app.get("/dashboard/join", function(req, res) {
 
 app.route("/dashboard/company/:cnumber")
   .get(function(req, res) {
-    // Display Relevant Information to the company and check they are in that company
-    res.render('companydashboard', {
-      errorMsg: null,
-      fName: null, //FIX THIS
-      cid: req.params.cnumber,
-      banner: 'Workspace: Company Dashboard'
-    })
+    // Display Relevant Information to the company and check they are in that company and that the company exists
+    if (req.cookies.userData){
+      res.render('companydashboard', {
+        errorMsg: null,
+        fName: req.cookies.userData.fName,
+        cid: req.params.cnumber,
+        banner: 'Workspace: Company Dashboard'
+      })
+    }
+    else{
+      res.redirect("/")
+    }
   })
 app.route("/dashboard/company/:cnumber/createjoin")
   .get(function(req, res) {
     //get the name of the company and other details
-    var cNumber = req.params.cnumber;
-    var sQuery = `SELECT * FROM company WHERE companyID = ?`;
-    connection.query(sQuery, [cNumber], function(error, results, fields) {
-      if (error) {
-        res.render('companydashboard', {
-          errorMsg: error,
-          fName: null, // FIX THIS
-          banner: 'Workspace: Company Dashboard'
-        }) //FIX THIS: Update Company to actual name
-      } else {
-        res.render('createjoinlink', {
-          fName: null,
-          banner: 'Workspace: Create a Join Link'
-        })
-      }
-    })
+    if (req.cookies.userData){
+      var cNumber = req.params.cnumber;
+      var sQuery = `SELECT * FROM company WHERE companyID = ?`;
+      connection.query(sQuery, [cNumber], function(error, results, fields) {
+        if (error) {
+          res.render('companydashboard', {
+            errorMsg: error,
+            fName: req.cookies.userData.fName,
+            banner: 'Workspace: Company Dashboard'
+          }) //FIX THIS: Update Company to actual name
+        } else {
+          res.render('createjoinlink', {
+            fName: req.cookies.userData.fName,
+            banner: 'Workspace: Create a Join Link'
+          })
+        }
+      })
+    }
+    else{
+      res.redirect("/")
+    }
   })
 
 app.get("/logout", function(req, res) {

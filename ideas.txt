@@ -13,3 +13,5 @@ Password Recovery Via Admins
 Company Dashboard features
   -- create join link
   -- owners can create admins
+
+Have redirects that require logging in to redirect to login as opposed to the homepage
