@@ -15,3 +15,9 @@ Company Dashboard features
   -- owners can create admins
 
 Have redirects that require logging in to redirect to login as opposed to the homepage
+
+Owners:
+  Creating Admins
+Admin/Owner Locked features
+  Join Links
+Employee features

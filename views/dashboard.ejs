@@ -1,5 +1,8 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
+<% if (errorMsg){ %>
+<%= errorMsg %>
+<% } %>
 <a href='/dashboard/create' class="btn btn-info">Create a Company Workspace</a>
 Join a Company Workspace
 <%- include('partials/footer') %>

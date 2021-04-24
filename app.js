@@ -185,7 +185,8 @@ app.get("/dashboard", function(req, res) {
   if (req.cookies.userData) {
     res.render("dashboard", {
       banner: "Workspace: Dashboard",
-      fName: req.cookies.userData.fName
+      fName: req.cookies.userData.fName,
+      errorMsg: null
     })
   } else {
     res.redirect("/");
@@ -237,23 +238,56 @@ app.get("/dashboard/join", function(req, res) {
 
 app.route("/dashboard/company/:cnumber")
   .get(function(req, res) {
-    // Display Relevant Information to the company and check they are in that company and that the company exists
-    if (req.cookies.userData){
-      res.render('companydashboard', {
-        errorMsg: null,
-        fName: req.cookies.userData.fName,
-        cid: req.params.cnumber,
-        banner: 'Workspace: Company Dashboard'
+    // Display Relevant Information to the company and check they are in that company and that the company exists, and what kind of power they have
+    if (req.cookies.userData) {
+      var sQuery = `
+      select * from employeesInCompany
+      left join company
+      on company.companyID = employeesInCompany.companyID
+      WHERE company.companyID = ?
+      `; // FIX THIS: Query will later need to accomadate a drop down menu for all associated companies
+      connection.query(sQuery, [req.params.cnumber], function(error, results, fields) {
+        if (error) {
+          //redirect to basic dashboard
+          res.render('dashboard', {
+            banner: "Workspace: Dashboard",
+            fName: req.cookies.userData.fName,
+            errorMsg: error
+          })
+        } else {
+          var found = false;
+          for (let y = 0; y < results.length; y++) {
+            if (results[y].userID === req.cookies.userData.id) {
+              found = true;
+              break;
+            }
+          }
+          if (found == true) {
+            res.render('companydashboard', {
+              errorMsg: null,
+              fName: req.cookies.userData.fName,
+              cid: req.params.cnumber,
+              cName: results[0].cName,
+              banner: 'Workspace: Company Dashboard'
+            })
+          } else {
+            res.render('dashboard', {
+              banner: "Workspace: Dashboard",
+              fName: req.cookies.userData.fName,
+              errorMsg: 'You are not a member of a company with that ID.'
+            })
+          }
+        }
       })
-    }
-    else{
+    } else {
       res.redirect("/")
     }
   })
 app.route("/dashboard/company/:cnumber/createjoin")
   .get(function(req, res) {
     //get the name of the company and other details
-    if (req.cookies.userData){
+    //create and insert a join link through randomatic in post
+    if (req.cookies.userData) {
       var cNumber = req.params.cnumber;
       var sQuery = `SELECT * FROM company WHERE companyID = ?`;
       connection.query(sQuery, [cNumber], function(error, results, fields) {
@@ -270,8 +304,7 @@ app.route("/dashboard/company/:cnumber/createjoin")
           })
         }
       })
-    }
-    else{
+    } else {
       res.redirect("/")
     }
   })
