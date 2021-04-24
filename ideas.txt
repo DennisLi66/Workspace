@@ -8,3 +8,8 @@ Direct Chat
 Write Announcements
 
 Password Recovery Via Admins
+
+
+Company Dashboard features
+  -- create join link
+  -- owners can create admins

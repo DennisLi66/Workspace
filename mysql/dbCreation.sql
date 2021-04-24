@@ -20,6 +20,12 @@ create table employeesInCompany(
 	userID int NOT NULL,
     companyID int NOT NULL,
     title varchar(255),
-	power boolean NOT NULL, -- Employee or Admin
+	power int NOT NULL, -- Employee or Admin -- 0 Employee 1 Admin 2 Owner
 	CONSTRAINT LL PRIMARY KEY (userID,companyID)
+);
+
+create table joinLinks (
+	companyID int NOT NULL,
+    link varchar(255) NOT NULL,
+    verify boolean -- 0 automatically join 1 verify joining
 )
