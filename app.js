@@ -328,6 +328,11 @@ app.route("/dashboard/company/:cnumber/createjoin")
   })
   .post(function(res, res) {})
 
+app.route("/dashboard/changeCompany")
+  .get(function(req,res){
+    
+  })
+
 app.get("/logout", function(req, res) {
   if (req.cookies.userData) {
     res.clearCookie('userData');

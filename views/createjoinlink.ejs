@@ -2,7 +2,19 @@
 <%- include('partials/navbar') %>
 
 <%= cName %>
-Create a join link
+
+<form action='<%= '/dashboard/company/' + + "/createjoin" %>' method='POST'>
+  <h4> Create a code that will allow users to join your company. </h4>
+    Automatic Verification?
+  <label class="switch">
+    <input type="checkbox" id="toggs" onclick="javascript:joinLinkToggle()">
+    <span class="slider round"></span>
+  </label>
+  <br>
+    <div id='descriptor'>The joiner will need to be manually verifed after using the join link.</div>
+      <input type="hidden" id='toggler' name="toggler" value="no">
+  <button type="submit" class="btn btn-dark">Create Join Link</button>
+</form>
 
 
 <%- include('partials/footer') %>
