@@ -40,7 +40,6 @@ app.get("/", function(req, res) {
     })
   }
 })
-
 app.route("/register")
   .get(function(req, res) {
     // FIX THIS: Add features to box
@@ -101,7 +100,6 @@ app.route("/register")
       })
     }
   })
-
 app.route("/login")
   .get(function(req, res) {
     //FIX THIS: Add logged in checking
@@ -149,7 +147,7 @@ app.route("/login")
               })
 
             } else if (rresult) {
-              console.log(results[0].username + " logged in.");
+              console.log(results[0].firstName + " logged in.");
               let cookieObj = {
                 fName: results[0].firstName,
                 lname: results[0].lastName,
@@ -175,12 +173,10 @@ app.route("/login")
       }
     })
   })
-
 app.get("/about", function(req, res) {
   //FIX THIS: Add an about page
 })
-
-//Logged in
+//Dashboard - Without Company
 app.get("/dashboard", function(req, res) {
   if (req.cookies.userData) {
     res.render("dashboard", {
@@ -192,7 +188,6 @@ app.get("/dashboard", function(req, res) {
     res.redirect("/");
   }
 })
-
 app.route("/dashboard/create")
   .get(function(req, res) {
     if (req.cookies.userData) {
@@ -231,7 +226,6 @@ app.route("/dashboard/create")
       res.redirect("/");
     }
   })
-
 app.get("/dashboard/join", function(req, res) {
 
 })
@@ -244,7 +238,7 @@ app.route("/dashboard/company/:cnumber")
       select * from employeesInCompany
       left join company
       on company.companyID = employeesInCompany.companyID
-      WHERE company.companyID = ?
+      WHERE company.companyID = ?;
       `; // FIX THIS: Query will later need to accomadate a drop down menu for all associated companies
       connection.query(sQuery, [req.params.cnumber], function(error, results, fields) {
         if (error) {
@@ -274,7 +268,7 @@ app.route("/dashboard/company/:cnumber")
             res.render('dashboard', {
               banner: "Workspace: Dashboard",
               fName: req.cookies.userData.fName,
-              errorMsg: 'You are not a member of a company with that ID.'
+              errorMsg: 'You are not an admin or owner of a company with that ID.'
             })
           }
         }
@@ -289,25 +283,50 @@ app.route("/dashboard/company/:cnumber/createjoin")
     //create and insert a join link through randomatic in post
     if (req.cookies.userData) {
       var cNumber = req.params.cnumber;
-      var sQuery = `SELECT * FROM company WHERE companyID = ?`;
+      var sQuery = `
+      select * from employeesInCompany
+      left join company
+      on company.companyID = employeesInCompany.companyID
+      WHERE company.companyID = ? and power = 2
+      `; // FIX THIS: Query will later need to accomadate a drop down menu for all associated companies
       connection.query(sQuery, [cNumber], function(error, results, fields) {
         if (error) {
-          res.render('companydashboard', {
-            errorMsg: error,
+          res.render('dashboard', {
+            //FIX THIS: Update Company to actual name
+            banner: "Workspace: Dashboard",
             fName: req.cookies.userData.fName,
-            banner: 'Workspace: Company Dashboard'
-          }) //FIX THIS: Update Company to actual name
-        } else {
-          res.render('createjoinlink', {
-            fName: req.cookies.userData.fName,
-            banner: 'Workspace: Create a Join Link'
+            errorMsg: error
           })
+        } else {
+          var found = false;
+          for (let y = 0; y < results.length; y++) {
+            if (results[y].userID === req.cookies.userData.id) {
+              found = true;
+              break;
+            }
+          }
+          if (found == true) {
+            res.render('createjoinlink', {
+              errorMsg: null,
+              fName: req.cookies.userData.fName,
+              banner: 'Workspace: Create a Join Link',
+              cid: req.params.cnumber,
+              cName: results[0].cName,
+            })
+          } else {
+            res.render('dashboard', {
+              banner: "Workspace: Dashboard",
+              fName: req.cookies.userData.fName,
+              errorMsg: 'You are not an admin or owner of a company with that ID.'
+            })
+          }
         }
       })
     } else {
       res.redirect("/")
     }
   })
+  .post(function(res, res) {})
 
 app.get("/logout", function(req, res) {
   if (req.cookies.userData) {
