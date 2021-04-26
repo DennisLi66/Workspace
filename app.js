@@ -185,7 +185,7 @@ app.get("/dashboard", function(req, res) {
       errorMsg: null
     })
   } else {
-    res.redirect("/");
+    res.redirect("/login");
   }
 })
 app.route("/dashboard/create")
@@ -198,7 +198,7 @@ app.route("/dashboard/create")
         errorMsg: null
       })
     } else {
-      res.redirect("/");
+      res.redirect("/login");
     }
   })
   .post(function(req, res) {
@@ -223,12 +223,19 @@ app.route("/dashboard/create")
         }
       })
     } else {
-      res.redirect("/");
+      res.redirect("/login");
     }
   })
-app.get("/dashboard/join", function(req, res) {
+app.route("/dashboard/join")
+  .get(function(req, res) {
+    //if not logged in kickem out
+    if (req.cookies.userData) {
 
-})
+    } else {
+      res.redirect("/login")
+    }
+  })
+  .post()
 
 app.route("/dashboard/company/:cnumber")
   .get(function(req, res) {
@@ -326,49 +333,57 @@ app.route("/dashboard/company/:cnumber/createjoin")
         }
       })
     } else {
-      res.redirect("/")
+      res.redirect("/login")
     }
   })
   .post(function(req, res) {
-    var determined = (req.body.toggler === 'no' ? false : true);
-    var multi = (req.body.toggler === 'no' ? true: false);
-    //randomly generate values
-    var rando = randomatic('aA0', 15);
-    var iQuery =
-    `
+    //FIX THIS: Write a better query ( or a second query ) to determine if user is qualified to create links
+    if (req.cookies.userData) {
+      var determined = (req.body.toggler === 'no' ? false : true);
+      var multi = (req.body.toggler === 'no' ? true : false);
+      //randomly generate values
+      var rando = randomatic('aA0', 15);
+      var iQuery =
+        `
     INSERT INTO joinLinks (companyID,link,verify,recency,oneoff,isactive) VALUES (?,?,?,NOW(),?,true);
     `;
-    connection.query(iQuery,[req.params.cnumber,rando,determined,multi],function(error,results,fields){
-      if (error){
-        res.render('createjoinlink', {
-          errorMsg: null,
-          fName: req.cookies.userData.fName,
-          banner: 'Workspace: Create a Join Link',
-          cid: req.params.cnumber,
-          cName: req.body.cName,
-          errorMsg: error,
-          posiMsg: null,
-          joinCode: null
-        })
-      }
-      else{
-        res.render('createjoinlink', {
-          errorMsg: null,
-          fName: req.cookies.userData.fName,
-          banner: 'Workspace: Create a Join Link',
-          cid: req.params.cnumber,
-          cName: req.body.cName,
-          errorMsg: null,
-          posiMsg: 'Your link has been created! Tell your employees to use the code below on joining a company.',
-          joinCode: rando
-        })
-      }
-    })
+      connection.query(iQuery, [req.params.cnumber, rando, determined, multi], function(error, results, fields) {
+        if (error) {
+          res.render('createjoinlink', {
+            errorMsg: null,
+            fName: req.cookies.userData.fName,
+            banner: 'Workspace: Create a Join Link',
+            cid: req.params.cnumber,
+            cName: req.body.cName,
+            errorMsg: error,
+            posiMsg: null,
+            joinCode: null
+          })
+        } else {
+          res.render('createjoinlink', {
+            errorMsg: null,
+            fName: req.cookies.userData.fName,
+            banner: 'Workspace: Create a Join Link',
+            cid: req.params.cnumber,
+            cName: req.body.cName,
+            errorMsg: null,
+            posiMsg: 'Your link has been created! Tell your employees to use the code below on joining a company.',
+            joinCode: rando
+          })
+        }
+      })
+    } else {
+      res.redirect("/login");
+    }
   })
 
 app.route("/dashboard/changeCompany")
-  .get(function(req,res){
+  .get(function(req, res) {
+    if (req.cookies.userData) {
 
+    } else {
+      res.redirect("/login")
+    }
   })
 
 app.get("/logout", function(req, res) {
