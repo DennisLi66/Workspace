@@ -27,5 +27,14 @@ create table employeesInCompany(
 create table joinLinks (
 	companyID int NOT NULL,
     link varchar(255) NOT NULL,
-    verify boolean -- 0 automatically join 1 verify joining
+    verify boolean, -- 0 automatically join 1 verify joining
+    recency date,
+    oneoff boolean, -- 0 one use, 1 multiple usage
+    isactive boolean -- 0 no 1 yes
+);
+
+create table joinApproval(
+	companyID int NOT NULL,
+    userID int NOT NULL,
+    link varchar(255) NOT NULL
 )

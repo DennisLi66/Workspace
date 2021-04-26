@@ -21,3 +21,6 @@ Owners:
 Admin/Owner Locked features
   Join Links
 Employee features
+
+need to be able to destroy join Links
+reauthenticate on page load

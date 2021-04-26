@@ -312,6 +312,9 @@ app.route("/dashboard/company/:cnumber/createjoin")
               banner: 'Workspace: Create a Join Link',
               cid: req.params.cnumber,
               cName: results[0].cName,
+              errorMsg: null,
+              posiMsg: null,
+              joinCode: null
             })
           } else {
             res.render('dashboard', {
@@ -326,11 +329,46 @@ app.route("/dashboard/company/:cnumber/createjoin")
       res.redirect("/")
     }
   })
-  .post(function(res, res) {})
+  .post(function(req, res) {
+    var determined = (req.body.toggler === 'no' ? false : true);
+    var multi = (req.body.toggler === 'no' ? true: false);
+    //randomly generate values
+    var rando = randomatic('aA0', 15);
+    var iQuery =
+    `
+    INSERT INTO joinLinks (companyID,link,verify,recency,oneoff,isactive) VALUES (?,?,?,NOW(),?,true);
+    `;
+    connection.query(iQuery,[req.params.cnumber,rando,determined,multi],function(error,results,fields){
+      if (error){
+        res.render('createjoinlink', {
+          errorMsg: null,
+          fName: req.cookies.userData.fName,
+          banner: 'Workspace: Create a Join Link',
+          cid: req.params.cnumber,
+          cName: req.body.cName,
+          errorMsg: error,
+          posiMsg: null,
+          joinCode: null
+        })
+      }
+      else{
+        res.render('createjoinlink', {
+          errorMsg: null,
+          fName: req.cookies.userData.fName,
+          banner: 'Workspace: Create a Join Link',
+          cid: req.params.cnumber,
+          cName: req.body.cName,
+          errorMsg: null,
+          posiMsg: 'Your link has been created! Tell your employees to use the code below on joining a company.',
+          joinCode: rando
+        })
+      }
+    })
+  })
 
 app.route("/dashboard/changeCompany")
   .get(function(req,res){
-    
+
   })
 
 app.get("/logout", function(req, res) {

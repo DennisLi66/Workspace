@@ -4,6 +4,7 @@ use workspaceDB;
 select * from users;
 select * from company;
 select * from employeesInCompany;
+select * from joinLinks;
 
 -- Company Creation Query
 INSERT INTO company (cName)
