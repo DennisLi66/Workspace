@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+<% if (results.length == 0){ %>
+You are not associated with any companies.
+<% } else {%>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col">Company ID</th>
+      <th scope="col">Company Name</th>
+      <th scope="col">Switch</th>
+    </tr>
+  </thead>
+  <tbody>
+    <%for (var p = 0; p < results.length; p++){ %>
+    <tr>
+      <th scope='row'><%=results[p].companyID%></th>
+      <td> <%= results[p].cName %></td>
+      <td>
+        <a href=<%= '/dashboard/company/' + results[p].companyID %> class="btn btn-info">Switch to <%= results[p].cName%></a>
+      </td>
+    </tr>
+    <%} %>
+  </tbody>
+</table>
+<%   } %>
+<%- include('partials/footer') %>

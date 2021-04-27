@@ -379,8 +379,24 @@ app.route("/dashboard/company/:cnumber/createjoin")
 
 app.route("/dashboard/changeCompany")
   .get(function(req, res) {
+    //search for all the companies an employee is a member of
     if (req.cookies.userData) {
-
+      var sQuery =
+      `
+      select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID WHERE userID = ?;
+      `
+      connection.query(sQuery,[req.cookies.userData.id],function(error,results,fields){
+        if (error){
+          res.redirect('/dashboard');
+        }
+        else{
+          res.render('companyswitch',{
+            banner: "Workspace: Select Company",
+            fName: req.cookies.userData.fName,
+            results: results
+          })
+        }
+      })
     } else {
       res.redirect("/login")
     }

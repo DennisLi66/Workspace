@@ -9,6 +9,7 @@ Write Announcements
 
 Password Recovery Via Admins
 
+on company dashboard show associated company name on navbar
 
 Company Dashboard features
   -- create join link
