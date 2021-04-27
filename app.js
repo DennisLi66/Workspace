@@ -358,7 +358,8 @@ app.route("/dashboard/company/:cnumber/createjoin")
             var rando = randomatic('aA0', 15);
             var iQuery =
               `
-          INSERT INTO joinLinks (companyID,link,verify,recency,oneoff,isactive) VALUES (?,?,?,NOW(),?,true);
+          INSERT INTO joinLinks (companyID,link,verify,recency,oneoff,isactive) VALUES (?,?,?,NOW(),?,true)
+          on duplicate key Update verify = values(verify), recency = values(recency), oneoff=values(oneoff), isactive=values(isactive);
           `;
             connection.query(iQuery, [req.params.cnumber, rando, determined, multi], function(error, results, fields) {
               if (error) {
