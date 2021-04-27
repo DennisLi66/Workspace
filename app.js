@@ -294,7 +294,7 @@ app.route("/dashboard/company/:cnumber/createjoin")
       select * from employeesInCompany
       left join company
       on company.companyID = employeesInCompany.companyID
-      WHERE company.companyID = ? and power = 2
+      WHERE company.companyID = ? and (power = 2 or power = 1)
       `; // FIX THIS: Query will later need to accomadate a drop down menu for all associated companies
       connection.query(sQuery, [cNumber], function(error, results, fields) {
         if (error) {
@@ -344,12 +344,12 @@ app.route("/dashboard/company/:cnumber/createjoin")
       select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID
       WHERE(power = 1 or power = 2) AND userID = ? and company.companyID = ?
       `;
-      connection(sQuery, [req.cookies.userData.id, req.params.cnumber], function(er, resu, fiels) {
+      connection.query(sQuery, [req.cookies.userData.id, req.params.cnumber], function(er, resu, fiels) {
         if (er) {
           console.log(er)
           res.redirect("/dashboard/company/" + req.params.cnumber)
         } else {
-          if (results.length == 0) {
+          if (resu.length == 0) {
             res.redirect("/dashboard/company/" + req.params.cnumber)
           } else {
             var determined = (req.body.toggler === 'no' ? false : true);
