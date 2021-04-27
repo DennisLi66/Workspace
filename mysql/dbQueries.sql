@@ -13,4 +13,6 @@ VALUES("Bob's Fried Rice");
 INSERT INTO employeesInCompany(userID,companyID,power) VALUES (1,last_insert_id(),True)
 ;
 -- Check that a company exists and that the employee is a member of that company
-select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID
+select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID;
+-- Check that a company exists and that the employee is a member of that company and has power of 1 or 2
+select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID WHERE(power = 1 or power = 2)

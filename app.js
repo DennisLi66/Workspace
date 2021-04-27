@@ -339,39 +339,56 @@ app.route("/dashboard/company/:cnumber/createjoin")
   .post(function(req, res) {
     //FIX THIS: Write a better query ( or a second query ) to determine if user is qualified to create links
     if (req.cookies.userData) {
-      var determined = (req.body.toggler === 'no' ? false : true);
-      var multi = (req.body.toggler === 'no' ? true : false);
-      //randomly generate values
-      var rando = randomatic('aA0', 15);
-      var iQuery =
+      var sQuery =
         `
-    INSERT INTO joinLinks (companyID,link,verify,recency,oneoff,isactive) VALUES (?,?,?,NOW(),?,true);
-    `;
-      connection.query(iQuery, [req.params.cnumber, rando, determined, multi], function(error, results, fields) {
-        if (error) {
-          res.render('createjoinlink', {
-            errorMsg: null,
-            fName: req.cookies.userData.fName,
-            banner: 'Workspace: Create a Join Link',
-            cid: req.params.cnumber,
-            cName: req.body.cName,
-            errorMsg: error,
-            posiMsg: null,
-            joinCode: null
-          })
+      select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID
+      WHERE(power = 1 or power = 2) AND userID = ? and company.companyID = ?
+      `;
+      connection(sQuery, [req.cookies.userData.id, req.params.cnumber], function(er, resu, fiels) {
+        if (er) {
+          console.log(er)
+          res.redirect("/dashboard/company/" + req.params.cnumber)
         } else {
-          res.render('createjoinlink', {
-            errorMsg: null,
-            fName: req.cookies.userData.fName,
-            banner: 'Workspace: Create a Join Link',
-            cid: req.params.cnumber,
-            cName: req.body.cName,
-            errorMsg: null,
-            posiMsg: 'Your link has been created! Tell your employees to use the code below on joining a company.',
-            joinCode: rando
-          })
+          if (results.length == 0) {
+            res.redirect("/dashboard/company/" + req.params.cnumber)
+          } else {
+            var determined = (req.body.toggler === 'no' ? false : true);
+            var multi = (req.body.toggler === 'no' ? true : false);
+            //randomly generate values
+            var rando = randomatic('aA0', 15);
+            var iQuery =
+              `
+          INSERT INTO joinLinks (companyID,link,verify,recency,oneoff,isactive) VALUES (?,?,?,NOW(),?,true);
+          `;
+            connection.query(iQuery, [req.params.cnumber, rando, determined, multi], function(error, results, fields) {
+              if (error) {
+                res.render('createjoinlink', {
+                  errorMsg: null,
+                  fName: req.cookies.userData.fName,
+                  banner: 'Workspace: Create a Join Link',
+                  cid: req.params.cnumber,
+                  cName: req.body.cName,
+                  errorMsg: error,
+                  posiMsg: null,
+                  joinCode: null
+                })
+              } else {
+                res.render('createjoinlink', {
+                  errorMsg: null,
+                  fName: req.cookies.userData.fName,
+                  banner: 'Workspace: Create a Join Link',
+                  cid: req.params.cnumber,
+                  cName: req.body.cName,
+                  errorMsg: null,
+                  posiMsg: 'Your link has been created! Tell your employees to use the code below on joining a company.',
+                  joinCode: rando
+                })
+              }
+            })
+          }
         }
       })
+
     } else {
       res.redirect("/login");
     }
@@ -382,15 +399,14 @@ app.route("/dashboard/changeCompany")
     //search for all the companies an employee is a member of
     if (req.cookies.userData) {
       var sQuery =
-      `
+        `
       select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID WHERE userID = ?;
       `
-      connection.query(sQuery,[req.cookies.userData.id],function(error,results,fields){
-        if (error){
+      connection.query(sQuery, [req.cookies.userData.id], function(error, results, fields) {
+        if (error) {
           res.redirect('/dashboard');
-        }
-        else{
-          res.render('companyswitch',{
+        } else {
+          res.render('companyswitch', {
             banner: "Workspace: Select Company",
             fName: req.cookies.userData.fName,
             results: results
