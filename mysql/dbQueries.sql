@@ -15,4 +15,7 @@ INSERT INTO employeesInCompany(userID,companyID,power) VALUES (1,last_insert_id(
 -- Check that a company exists and that the employee is a member of that company
 select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID;
 -- Check that a company exists and that the employee is a member of that company and has power of 1 or 2
-select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID WHERE(power = 1 or power = 2)
+select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID WHERE(power = 1 or power = 2);
+-- Check that a company has a valid link and that the user isn't already in the company
+-- select 'eic' as Identity, companyID, userID, null as link, null as verify, null as oneoff, null as isactive from employeesInCompany WHERE userID = ? AND companyID = ?;
+-- select 'code' as Identity, companyID, null as userID, link, verify, oneoff, isactive from joinlinks WHERE isactive = 1 AND link = ?

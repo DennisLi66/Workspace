@@ -31,7 +31,7 @@ create table joinLinks (
     recency date,
     oneoff boolean, -- 0 one use, 1 multiple usage
     isactive boolean, -- 0 no 1 yes
-        	CONSTRAINT LL PRIMARY KEY (link,companyID)
+        	CONSTRAINT LL PRIMARY KEY (link)
 );
 
 

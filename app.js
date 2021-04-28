@@ -230,13 +230,85 @@ app.route("/dashboard/join")
   .get(function(req, res) {
     //if not logged in kickem out
     if (req.cookies.userData) {
-
+      res.render('joincompany', {
+        banner: 'Workspace: Join a Company',
+        fName: req.cookies.userData.fName,
+        errorMsg: null,
+        posiMsg: null
+      })
     } else {
       res.redirect("/login")
     }
   })
-  .post()
-
+  .post(function(req, res) {
+    if (req.cookies.userData) {
+      var sQuery =
+        `
+      select 'eic' as Identity, companyID, userID, null as link, null as verify, null as oneoff, null as isactive from employeesInCompany WHERE userID = ?;
+      select 'code' as Identity,companyID, null as userID, link, verify, oneoff, isactive from joinlinks WHERE isactive = 1 AND link = ?
+      `
+      connection.query(sQuery, [req.cookies.userData.id, req.body.code], function(er, resu, fiels) {
+        if (er) {
+          res.render('joincompany', {
+            banner: 'Workspace: Join a Company',
+            fName: req.cookies.userData.fName,
+            errorMsg: er,
+            posiMsg: null
+          })
+        } else {
+          console.log(resu)
+          var found = false;
+          var verif;
+          var cid;
+          var oneoff;
+          for (let o = 0; o < resu.length; o++) {
+            if (resu[o].Identity === 'code') {
+              verif = resu[o].verify;
+              cid = resu[o].companyID;
+              oneoff = resu[o].oneoff;
+            } else {
+              if (resu[o].Identity === 'eic' && resu[o].companyID === cid) {
+                found = true;
+                break;
+              }
+            }
+          }
+          if (resu.length == 0) {
+            res.render('joincompany', {
+              banner: 'Workspace: Join a Company',
+              fName: req.cookies.userData.fName,
+              errorMsg: null,
+              posiMsg: 'The code you used was invalid.'
+            })
+          } else if (found) {
+            res.render('joincompany', {
+              banner: 'Workspace: Join a Company',
+              fName: req.cookies.userData.fName,
+              errorMsg: null,
+              posiMsg: 'You are already a member of that company.'
+            })
+          }
+          else if (!cid){
+            res.render('joincompany', {
+              banner: 'Workspace: Join a Company',
+              fName: req.cookies.userData.fName,
+              errorMsg: null,
+              posiMsg: 'The code you used was invalid.'
+            })
+          }
+          else {
+            //if both
+            // if  is one off
+            //if needs verification
+            // if neither
+            console.log(verif + cid + oneoff);
+          }
+        }
+      })
+    } else {
+      res.redirect("/login");
+    }
+  })
 app.route("/dashboard/company/:cnumber")
   .get(function(req, res) {
     // Display Relevant Information to the company and check they are in that company and that the company exists, and what kind of power they have
@@ -359,7 +431,7 @@ app.route("/dashboard/company/:cnumber/createjoin")
             var iQuery =
               `
           INSERT INTO joinLinks (companyID,link,verify,recency,oneoff,isactive) VALUES (?,?,?,NOW(),?,true)
-          on duplicate key Update verify = values(verify), recency = values(recency), oneoff=values(oneoff), isactive=values(isactive);
+          on duplicate key Update companyID = values(companyID),verify = values(verify), recency = values(recency), oneoff=values(oneoff), isactive=values(isactive);
           `;
             connection.query(iQuery, [req.params.cnumber, rando, determined, multi], function(error, results, fields) {
               if (error) {

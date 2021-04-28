@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+<% if (errorMsg){ %>
+<%= errorMsg %>
+<% } %>
+<% if (posiMsg){ %>
+<%= posiMsg %>
+<% } %>
+<form action='/dashboard/join' method='POST'>
+  <label for='cname'>Please enter the code assigned to you from the company.</label><br>
+  <input type="text" name='code' id='code' required><br>
+  <button type="submit" class="btn btn-light">Join Company</button>
+</form>
+
+
+<%- include('partials/footer') %>
