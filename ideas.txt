@@ -28,3 +28,5 @@ reauthenticate on page load
 
 create join link may need to be reworked
  redirect should change based on if employee is member of company or not
+
+ Need Page for handling employees (change permissions, remove links, verify employees)

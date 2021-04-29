@@ -8,7 +8,6 @@ function joinLinkToggle() {
     document.getElementById('toggler').value = 'no';
   }
 }
-
 function joinLinkToggle2() {
   var t = document.getElementById('toggs2').checked;
   if (t) {

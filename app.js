@@ -244,7 +244,8 @@ app.route("/dashboard/join")
     if (req.cookies.userData) {
       var sQuery =
         `
-      select 'eic' as Identity, companyID, userID, null as link, null as verify, null as oneoff, null as isactive from employeesInCompany WHERE userID = ?;
+      select 'eic' as Identity, companyID, userID, null as link, null as verify, null as oneoff, null as isactive from employeesInCompany WHERE userID = ?
+      UNION ALL
       select 'code' as Identity,companyID, null as userID, link, verify, oneoff, isactive from joinlinks WHERE isactive = 1 AND link = ?
       `
       connection.query(sQuery, [req.cookies.userData.id, req.body.code], function(er, resu, fiels) {
@@ -255,14 +256,14 @@ app.route("/dashboard/join")
             errorMsg: er,
             posiMsg: null
           })
-        } else {
-          console.log(resu)
+        } else if (resu) {
           var found = false;
           var verif;
           var cid;
           var oneoff;
           for (let o = 0; o < resu.length; o++) {
             if (resu[o].Identity === 'code') {
+              console.log(resu[o])
               verif = resu[o].verify;
               cid = resu[o].companyID;
               oneoff = resu[o].oneoff;
@@ -287,21 +288,122 @@ app.route("/dashboard/join")
               errorMsg: null,
               posiMsg: 'You are already a member of that company.'
             })
-          }
-          else if (!cid){
+          } else if (!cid) {
             res.render('joincompany', {
               banner: 'Workspace: Join a Company',
               fName: req.cookies.userData.fName,
               errorMsg: null,
               posiMsg: 'The code you used was invalid.'
             })
-          }
-          else {
+          } else {
             //if both
+            if (oneoff == 1 && verif == 1) {
+              console.log('Needs verification and update');
+              var iQuery =
+                `
+              UPDATE joinLinks SET isactive = 0 WHERE link = ?;
+              INSERT INTO joinApproval (companyID,userID,link,recency) VALUES (?,?,?,NOW());
+              `;
+              connection.query(iQuery, [], function(error, results, fields) {
+                if (error) {
+                  res.render('joincompany', {
+                    banner: 'Workspace: Join a Company',
+                    fName: req.cookies.userData.fName,
+                    errorMsg: error,
+                    posiMsg: null
+                  })
+                } else {
+                  res.render('joincompany', {
+                    banner: 'Workspace: Join a Company',
+                    fName: req.cookies.userData.fName,
+                    errorMsg: null,
+                    posiMsg: 'You have submitted your code, but must wait for manual verification by an admin before joining.'
+                  })
+                }
+              })
+            }
             // if  is one off
+            else if (oneoff == 1 && verif == 0) {
+              console.log('Needs update but insert');
+              var iQuery =
+                `
+              INSERT INTO employeesInCompany (userID,companyID,title,power) values (?,?,NULL,0);
+              UPDATE joinLinks SET isactive = 0 WHERE link = ?;
+              `;
+              connection.query(iQuery, [], function(error, results, fields) {
+                if (error) {
+                  res.render('joincompany', {
+                    banner: 'Workspace: Join a Company',
+                    fName: req.cookies.userData.fName,
+                    errorMsg: error,
+                    posiMsg: null
+                  })
+                } else {
+                  res.render('companydashboard', {
+                    errorMsg: null,
+                    posiMsg: null,
+                    power: 0,
+                    fName: req.cookies.userData.fName,
+                    cid: req.params.cnumber,
+                    cName: results[0].cName,
+                    banner: 'Workspace: Company Dashboard'
+                  })
+                }
+              })
+            }
             //if needs verification
+            else if (oneoff == 0 && verif == 1) {
+              console.log('Needs verification');
+              var iQuery =
+                `
+              INSERT INTO joinApproval (companyID,userID,link,recency) VALUES (?,?,?,NOW());
+              `;
+              connection.query(iQuery, [cid, req.cookies.userData.id, req.body.code], function(error, results, fields) {
+                if (error) {
+                  res.render('joincompany', {
+                    banner: 'Workspace: Join a Company',
+                    fName: req.cookies.userData.fName,
+                    errorMsg: error,
+                    posiMsg: null
+                  })
+                } else {
+                  res.render('joincompany', {
+                    banner: 'Workspace: Join a Company',
+                    fName: req.cookies.userData.fName,
+                    errorMsg: null,
+                    posiMsg: 'You have submitted your code, but must wait for manual verification by an admin before joining.'
+                  })
+                }
+              })
+            }
             // if neither
-            console.log(verif + cid + oneoff);
+            else {
+              console.log('Immediate Employee Insertion')
+              var iQuery =
+                `
+              INSERT INTO employeesInCompany (userID,companyID,title,power) values (?,?,NULL,0);
+              `;
+              connection.query(iQuery, [req.cookies.userData.id, cid], function(error, results, fields) {
+                if (error) {
+                  res.render('joincompany', {
+                    banner: 'Workspace: Join a Company',
+                    fName: req.cookies.userData.fName,
+                    errorMsg: error,
+                    posiMsg: null
+                  })
+                } else {
+                  res.render('companydashboard', {
+                    errorMsg: null,
+                    posiMsg: null,
+                    power: 0,
+                    fName: req.cookies.userData.fName,
+                    cid: req.params.cnumber,
+                    cName: results[0].cName,
+                    banner: 'Workspace: Company Dashboard'
+                  })
+                }
+              })
+            }
           }
         }
       })
@@ -317,9 +419,9 @@ app.route("/dashboard/company/:cnumber")
       select * from employeesInCompany
       left join company
       on company.companyID = employeesInCompany.companyID
-      WHERE company.companyID = ?;
+      WHERE company.companyID = ? AND userID = ?;
       `; // FIX THIS: Query will later need to accomadate a drop down menu for all associated companies
-      connection.query(sQuery, [req.params.cnumber], function(error, results, fields) {
+      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id], function(error, results, fields) {
         if (error) {
           //redirect to basic dashboard
           res.render('dashboard', {
@@ -328,26 +430,16 @@ app.route("/dashboard/company/:cnumber")
             errorMsg: error
           })
         } else {
-          var found = false;
-          for (let y = 0; y < results.length; y++) {
-            if (results[y].userID === req.cookies.userData.id) {
-              found = true;
-              break;
-            }
-          }
-          if (found == true) {
+          if (results.length > 0) {
+            var power = results[0].power;
             res.render('companydashboard', {
               errorMsg: null,
+              posiMsg: null,
+              power: power,
               fName: req.cookies.userData.fName,
               cid: req.params.cnumber,
               cName: results[0].cName,
               banner: 'Workspace: Company Dashboard'
-            })
-          } else {
-            res.render('dashboard', {
-              banner: "Workspace: Dashboard",
-              fName: req.cookies.userData.fName,
-              errorMsg: 'You are not an admin or owner of a company with that ID.'
             })
           }
         }

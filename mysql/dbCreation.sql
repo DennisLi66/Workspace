@@ -34,11 +34,11 @@ create table joinLinks (
         	CONSTRAINT LL PRIMARY KEY (link)
 );
 
-
 create table joinApproval(
 	companyID int NOT NULL,
     userID int NOT NULL,
     link varchar(255) NOT NULL,
+    recency date,
     	CONSTRAINT LL PRIMARY KEY (userID,companyID)
     
 )

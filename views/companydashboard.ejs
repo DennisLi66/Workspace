@@ -1,9 +1,13 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
+<% if (posiMsg){ %>
+<%= posiMsg %>
+<% } %>
 Have a list of joined companies
 Go back to basic dashboard
 <%= cName %>
 
+<% if (power == 1 || power == 2){%>
 <a href='<%='/dashboard/company/'  + cid + '/createjoin'%>' class="btn btn-info">Create a join link</a>
-
+<% } %>
 <%- include('partials/footer') %>
