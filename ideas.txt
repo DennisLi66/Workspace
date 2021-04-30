@@ -32,3 +32,5 @@ create join link may need to be reworked
  Need Page for handling employees (change permissions, remove links, verify employees)
 
  Make a back button button that leads back to the company dashboarrd
+
+ Add companies to basic dashboard

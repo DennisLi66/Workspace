@@ -330,7 +330,7 @@ app.route("/dashboard/join")
               INSERT INTO employeesInCompany (userID,companyID,title,power) values (?,?,NULL,0);
               UPDATE joinLinks SET isactive = 0 WHERE link = ?;
               `;
-              connection.query(iQuery, [], function(error, results, fields) {
+              connection.query(iQuery, [req.cookies.userData.id,cid,req.body.code], function(error, results, fields) {
                 if (error) {
                   res.render('joincompany', {
                     banner: 'Workspace: Join a Company',
@@ -517,7 +517,9 @@ app.route("/dashboard/company/:cnumber/createjoin")
             res.redirect("/dashboard/company/" + req.params.cnumber)
           } else {
             var determined = (req.body.toggler === 'no' ? false : true);
-            var multi = (req.body.toggler === 'no' ? true : false);
+            var multi = (req.body.toggler2 === 'no' ? true : false);
+
+            console.log(determined + multi)
             //randomly generate values
             var rando = randomatic('aA0', 15);
             var iQuery =

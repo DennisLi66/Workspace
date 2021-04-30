@@ -27,4 +27,5 @@ select * from employeesInCompany left join company on company.companyID = employ
 -- select * from joinLinks where companyID = ?;
 
 -- Show those needing verification
--- select * from joinApproval WHERE companyID = ?;
+-- select * from joinApproval left join users on users.userID = joinApproval.userID
+-- WHERE companyID = ?;

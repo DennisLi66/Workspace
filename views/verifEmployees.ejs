@@ -5,30 +5,64 @@
 
 <h4>Employee verification</h4>
 <% if (ndAppr && ndAppr.length > 0){ %>
-  <table class='table'>
-    <th scope="col">User ID</th>
-    <th scope="col">First Name</th>
-    <th scope="col">Last Name</th>
-    <th scope='col'>Email</th>
-        <th scope='col'>Link Used</th>
-    <th scope='col'>Date Created</th>
-        <th scope='col'>Accept User</th>
-            <th scope='col'>Decline User</th>
-  </table>
+<table class='table'>
+  <thead>
+    <tr>
+      <th scope="col">User ID</th>
+      <th scope="col">First Name</th>
+      <th scope="col">Last Name</th>
+      <th scope='col'>Email</th>
+      <th scope='col'>Link Used</th>
+      <th scope='col'>Date Created</th>
+      <th scope='col'>Accept User</th>
+      <th scope='col'>Decline User</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for (var r = 0; r < ndAppr.length; r++){%>
+    <tr>
+      <th scope="col"> <%= ndAppr[r].userID %> </th>
+      <td scope="col"> <%= ndAppr[r].firstName %> </td>
+      <td scope="col"> <%= ndAppr[r].lastName %> </td>
+      <td scope="col"> <%= ndAppr[r].email %> </td>
+      <td scope="col"> <%= ndAppr[r].link %> </td>
+      <td scope="col"> <%= ndAppr[r].recency %> </td>
+      <td scope="col"> Accept User Button </td>
+      <td scope="col"> Delete User Button </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
 <% } else {%>
-  There are no employees that need verification.
+There are no employees that need verification.
 <% } %>
 <h4>Join Links</h4>
 <% if (links && links.length > 0){ %>
-  <table class='table'>
-    <th scope="col">Link</th>
-    <th scope="col">Automatic Verification?</th>
-    <th scope="col">Only Works Once?</th>
-    <th scope='col'>Currently Active?</th>
-    <th scope='col'>Date Created</th>
-    <th scope='col'>Delete Column</th>
-  </table>
+<table class='table'>
+  <thead>
+    <tr>
+      <th scope="col">Link</th>
+      <th scope="col">Automatic Verification?</th>
+      <th scope="col">Only Works Once?</th>
+      <th scope='col'>Currently Active?</th>
+      <th scope='col'>Date Created</th>
+      <th scope='col'>Delete Column</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for (var r = 0; r < links.length; r++){%>
+    <tr>
+      <th scope='row'><%=links[r].link%></th>
+      <td> <%= (links[r].verify == 1 ? 'No' : 'Yes') %></td>
+      <td> <%= (links[r].oneoff == 1 ? 'No' : 'Yes') %></td>
+      <td> <%= (links[r].isactive == 0 ? 'No' : 'Yes') %></td>
+      <td> <%= (links[r].recency) %></td>
+      <td> Delete Button </td>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
 <% } else {%>
-  There are no associated join links.
+There are no associated join links.
 <% } %>
 <%- include('partials/footer') %>
