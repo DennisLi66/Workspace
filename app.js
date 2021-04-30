@@ -558,7 +558,6 @@ app.route("/dashboard/company/:cnumber/createjoin")
       res.redirect("/login");
     }
   })
-
 app.route("/dashboard/changeCompany")
   .get(function(req, res) {
     //search for all the companies an employee is a member of
@@ -582,7 +581,38 @@ app.route("/dashboard/changeCompany")
       res.redirect("/login")
     }
   })
-
+app.route("/dashboard/company/:cnumber/verify")
+  .get(function(req, res) {
+    if (req.cookies.userData) {
+      var sQuery =
+        `
+        select * from employeesInCompany WHERE (power = 1 or power = 2) AND companyID = ? AND userID = ?;
+        select * from joinLinks where companyID = ?;
+        select * from joinApproval left join users on users.userID = joinApproval.userID WHERE companyID = ?;
+      `;
+      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id, req.params.cnumber, req.params.cnumber], function(error, results, fields) {
+        if (error) {
+          console.log(error);
+          res.redirect("/dashboard/company/" + req.params.cnumber + "/verify");
+        } else {
+          console.log(results);
+          if (results[0].length == 0) {
+            console.log("No Admin/Owner Powers");
+            res.redirect("/dashboard/company/" + req.params.cnumber + "/verify");
+          } else {
+            res.render('verifEmployees', {
+              fName: req.cookies.userData.fName,
+              banner: 'Workspace: Employee Verification',
+              ndAppr: results[2],
+              links: results[1]
+            })
+          }
+        }
+      })
+    } else {
+      res.redirect("/login");
+    }
+  })
 app.get("/logout", function(req, res) {
   if (req.cookies.userData) {
     res.clearCookie('userData');

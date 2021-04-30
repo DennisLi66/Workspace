@@ -19,3 +19,12 @@ select * from employeesInCompany left join company on company.companyID = employ
 -- Check that a company has a valid link and that the user isn't already in the company
 -- select 'eic' as Identity, companyID, userID, null as link, null as verify, null as oneoff, null as isactive from employeesInCompany WHERE userID = ? AND companyID = ?;
 -- select 'code' as Identity, companyID, null as userID, link, verify, oneoff, isactive from joinlinks WHERE isactive = 1 AND link = ?
+
+-- Confirm that an employee has power
+-- select * from employeesInCompany WHERE (power = 1 or power = 2) AND companyID = ? AND userID = ?;
+
+-- Show Join Links
+-- select * from joinLinks where companyID = ?;
+
+-- Show those needing verification
+-- select * from joinApproval WHERE companyID = ?;

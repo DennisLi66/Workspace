@@ -1,0 +1,34 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<h2>Verification</h2>
+
+<h4>Employee verification</h4>
+<% if (ndAppr && ndAppr.length > 0){ %>
+  <table class='table'>
+    <th scope="col">User ID</th>
+    <th scope="col">First Name</th>
+    <th scope="col">Last Name</th>
+    <th scope='col'>Email</th>
+        <th scope='col'>Link Used</th>
+    <th scope='col'>Date Created</th>
+        <th scope='col'>Accept User</th>
+            <th scope='col'>Decline User</th>
+  </table>
+<% } else {%>
+  There are no employees that need verification.
+<% } %>
+<h4>Join Links</h4>
+<% if (links && links.length > 0){ %>
+  <table class='table'>
+    <th scope="col">Link</th>
+    <th scope="col">Automatic Verification?</th>
+    <th scope="col">Only Works Once?</th>
+    <th scope='col'>Currently Active?</th>
+    <th scope='col'>Date Created</th>
+    <th scope='col'>Delete Column</th>
+  </table>
+<% } else {%>
+  There are no associated join links.
+<% } %>
+<%- include('partials/footer') %>
