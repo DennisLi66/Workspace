@@ -263,7 +263,6 @@ app.route("/dashboard/join")
           var oneoff;
           for (let o = 0; o < resu.length; o++) {
             if (resu[o].Identity === 'code') {
-              console.log(resu[o])
               verif = resu[o].verify;
               cid = resu[o].companyID;
               oneoff = resu[o].oneoff;
@@ -330,7 +329,7 @@ app.route("/dashboard/join")
               INSERT INTO employeesInCompany (userID,companyID,title,power) values (?,?,NULL,0);
               UPDATE joinLinks SET isactive = 0 WHERE link = ?;
               `;
-              connection.query(iQuery, [req.cookies.userData.id,cid,req.body.code], function(error, results, fields) {
+              connection.query(iQuery, [req.cookies.userData.id, cid, req.body.code], function(error, results, fields) {
                 if (error) {
                   res.render('joincompany', {
                     banner: 'Workspace: Join a Company',
@@ -518,8 +517,6 @@ app.route("/dashboard/company/:cnumber/createjoin")
           } else {
             var determined = (req.body.toggler === 'no' ? false : true);
             var multi = (req.body.toggler2 === 'no' ? true : false);
-
-            console.log(determined + multi)
             //randomly generate values
             var rando = randomatic('aA0', 15);
             var iQuery =
@@ -597,7 +594,6 @@ app.route("/dashboard/company/:cnumber/verify")
           console.log(error);
           res.redirect("/dashboard/company/" + req.params.cnumber + "/verify");
         } else {
-          console.log(results);
           if (results[0].length == 0) {
             console.log("No Admin/Owner Powers");
             res.redirect("/dashboard/company/" + req.params.cnumber + "/verify");
@@ -605,6 +601,7 @@ app.route("/dashboard/company/:cnumber/verify")
             res.render('verifEmployees', {
               fName: req.cookies.userData.fName,
               banner: 'Workspace: Employee Verification',
+              cid: req.params.cnumber,
               ndAppr: results[2],
               links: results[1]
             })
@@ -613,6 +610,25 @@ app.route("/dashboard/company/:cnumber/verify")
       })
     } else {
       res.redirect("/login");
+    }
+  })
+  .post(function(req, res) {
+    if (req.cookies.userData) {
+      if (req.body.contract === 'delink') {
+        var dQuery =
+          `
+      DELETE FROM joinLinks WHERE link = ?;
+      DELETE FROM joinApproval WHERE link = ?;
+      `;
+        connection.query(dQuery, [req.body.code, req.body.code], function(error, results, fields) {
+          if (error) {
+            console.log(error);
+          }
+        })
+        res.redirect("/dashboard/company/" + req.params.cnumber + "/verify");
+      }
+    } else {
+      res.redirect("/login")
     }
   })
 app.get("/logout", function(req, res) {

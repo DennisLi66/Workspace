@@ -57,7 +57,13 @@ There are no employees that need verification.
       <td> <%= (links[r].oneoff == 1 ? 'No' : 'Yes') %></td>
       <td> <%= (links[r].isactive == 0 ? 'No' : 'Yes') %></td>
       <td> <%= (links[r].recency) %></td>
-      <td> Delete Button </td>
+      <td>
+        <form action='<%= '/dashboard/company/'+ cid  + /verify/%>' method='POST'>
+          <input type='hidden' name='code' value='<%= links[r].link %>'>
+          <input type='hidden' name='contract' value='delink'>
+          <button type="submit" class="btn btn-light">Delete Link</button>
+        </form>
+      </td>
     </tr>
     <% } %>
   </tbody>
