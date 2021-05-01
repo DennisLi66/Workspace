@@ -27,7 +27,13 @@
       <td scope="col"> <%= ndAppr[r].email %> </td>
       <td scope="col"> <%= ndAppr[r].link %> </td>
       <td scope="col"> <%= ndAppr[r].recency %> </td>
-      <td scope="col"> Accept User Button </td>
+      <td scope="col">
+        <form action='<%= '/dashboard/company/'+ cid  + /verify/%>' method='POST'>
+          <input type='hidden' name='code' value='<%= ndAppr[r].userID %>'>
+          <input type='hidden' name='contract' value='adduser'>
+          <button type="submit" class="btn btn-light">Add User</button>
+        </form>
+      </td>
       <td scope="col"> Delete User Button </td>
     </tr>
     <% } %>
@@ -53,11 +59,11 @@ There are no employees that need verification.
     <% for (var r = 0; r < links.length; r++){%>
     <tr>
       <th scope='row'><%=links[r].link%></th>
-      <td> <%= (links[r].verify == 1 ? 'No' : 'Yes') %></td>
-      <td> <%= (links[r].oneoff == 1 ? 'No' : 'Yes') %></td>
-      <td> <%= (links[r].isactive == 0 ? 'No' : 'Yes') %></td>
-      <td> <%= (links[r].recency) %></td>
-      <td>
+      <td scope="col"> <%= (links[r].verify == 1 ? 'No' : 'Yes') %></td>
+      <td scope="col"> <%= (links[r].oneoff == 1 ? 'Yes' : 'No') %></td>
+      <td scope="col"> <%= (links[r].isactive == 0 ? 'No' : 'Yes') %></td>
+      <td scope="col"> <%= (links[r].recency) %></td>
+      <td scope="col">
         <form action='<%= '/dashboard/company/'+ cid  + /verify/%>' method='POST'>
           <input type='hidden' name='code' value='<%= links[r].link %>'>
           <input type='hidden' name='contract' value='delink'>

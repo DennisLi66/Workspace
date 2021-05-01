@@ -244,9 +244,8 @@ app.route("/dashboard/join")
     if (req.cookies.userData) {
       var sQuery =
         `
-      select 'eic' as Identity, companyID, userID, null as link, null as verify, null as oneoff, null as isactive from employeesInCompany WHERE userID = ?
-      UNION ALL
-      select 'code' as Identity,companyID, null as userID, link, verify, oneoff, isactive from joinlinks WHERE isactive = 1 AND link = ?
+      select companyID, userID from employeesInCompany WHERE userID = ?;
+      select companyID, link, verify, oneoff, isactive from joinlinks WHERE isactive = 1 AND link = ?;
       `
       connection.query(sQuery, [req.cookies.userData.id, req.body.code], function(er, resu, fiels) {
         if (er) {
@@ -261,26 +260,25 @@ app.route("/dashboard/join")
           var verif;
           var cid;
           var oneoff;
-          for (let o = 0; o < resu.length; o++) {
-            if (resu[o].Identity === 'code') {
-              verif = resu[o].verify;
-              cid = resu[o].companyID;
-              oneoff = resu[o].oneoff;
-            } else {
-              if (resu[o].Identity === 'eic' && resu[o].companyID === cid) {
-                found = true;
-                break;
-              }
-            }
-          }
-          if (resu.length == 0) {
+          if (resu[1].length == 0) {
             res.render('joincompany', {
               banner: 'Workspace: Join a Company',
               fName: req.cookies.userData.fName,
               errorMsg: null,
               posiMsg: 'The code you used was invalid.'
             })
-          } else if (found) {
+          }
+          else{
+          verif = resu[1][0].verify;
+          cid = resu[1][0].companyID;
+          oneoff = resu[1][0].oneoff;
+          for (let o = 0; o < resu[0].length; o++) {
+            if (resu[0][o].companyID === cid){
+              found = true;
+              break;
+            }
+          }
+          if (found) {
             res.render('joincompany', {
               banner: 'Workspace: Join a Company',
               fName: req.cookies.userData.fName,
@@ -381,8 +379,9 @@ app.route("/dashboard/join")
               var iQuery =
                 `
               INSERT INTO employeesInCompany (userID,companyID,title,power) values (?,?,NULL,0);
+              SELECT * from company WHERE companyID = ?;
               `;
-              connection.query(iQuery, [req.cookies.userData.id, cid], function(error, results, fields) {
+              connection.query(iQuery, [req.cookies.userData.id, cid,cid], function(error, results, fields) {
                 if (error) {
                   res.render('joincompany', {
                     banner: 'Workspace: Join a Company',
@@ -397,13 +396,15 @@ app.route("/dashboard/join")
                     power: 0,
                     fName: req.cookies.userData.fName,
                     cid: req.params.cnumber,
-                    cName: results[0].cName,
+                    cName: results[1].cName,
                     banner: 'Workspace: Company Dashboard'
                   })
                 }
               })
             }
           }
+}
+
         }
       })
     } else {
@@ -626,6 +627,22 @@ app.route("/dashboard/company/:cnumber/verify")
           }
         })
         res.redirect("/dashboard/company/" + req.params.cnumber + "/verify");
+      }
+      else if (req.body.contract === 'adduser'){
+        var iQuery =
+        `
+        INSERT INTO employeesInCompany (userID,companyID,title,power) VALUES (?,?,null,0);
+        DELETE FROM joinApproval WHERE companyID = ? AND userID = ?;
+        `
+        connection.query(iQuery,[req.cookies.userData.id,req.params.cnumber,req.params.cnumber,req.cookies.userData.id],function(error,results,fields){
+          if (error){
+            console.log(error)
+          }
+        })
+        res.redirect("/dashboard/company/" + cnumber + "/verify" )
+      }
+      else if (req.body.contract === 'deluser'){
+
       }
     } else {
       res.redirect("/login")
