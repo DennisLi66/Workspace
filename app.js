@@ -179,10 +179,32 @@ app.get("/about", function(req, res) {
 //Dashboard - Without Company
 app.get("/dashboard", function(req, res) {
   if (req.cookies.userData) {
-    res.render("dashboard", {
-      banner: "Workspace: Dashboard",
-      fName: req.cookies.userData.fName,
-      errorMsg: null
+    var employedAt = null;
+    var sQuery =
+    `
+    select userID, company.companyID as companyID, cName as title from employeesInCompany left join company on company.companyID = employeesInCompany.companyID WHERE userid = ?;
+    `
+    ;
+    connection.query(sQuery,[req.cookies.userData.id],function(error,results,fields){
+      if (error){
+        console.log(error);
+        employedAt = null;
+        res.render("dashboard", {
+          banner: "Workspace: Dashboard",
+          fName: req.cookies.userData.fName,
+          empl: employedAt,
+          errorMsg: null
+        })
+      }
+      else{
+        employedAt = results;
+        res.render("dashboard", {
+          banner: "Workspace: Dashboard",
+          fName: req.cookies.userData.fName,
+          empl: employedAt,
+          errorMsg: null
+        })
+      }
     })
   } else {
     res.redirect("/login");
@@ -300,7 +322,7 @@ app.route("/dashboard/join")
               UPDATE joinLinks SET isactive = 0 WHERE link = ?;
               INSERT INTO joinApproval (companyID,userID,link,recency) VALUES (?,?,?,NOW());
               `;
-                connection.query(iQuery, [req.body.code,req.params.cnumber,req.cookies.userData.id,req.body.code], function(error, results, fields) {
+                connection.query(iQuery, [req.body.code, req.params.cnumber, req.cookies.userData.id, req.body.code], function(error, results, fields) {
                   if (error) {
                     res.render('joincompany', {
                       banner: 'Workspace: Join a Company',
@@ -423,11 +445,8 @@ app.route("/dashboard/company/:cnumber")
       connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id], function(error, results, fields) {
         if (error) {
           //redirect to basic dashboard
-          res.render('dashboard', {
-            banner: "Workspace: Dashboard",
-            fName: req.cookies.userData.fName,
-            errorMsg: error
-          })
+          console.log(error);
+          res.redirect("/dashboard/company/" + req.params.cnumber);
         } else {
           if (results.length > 0) {
             var power = results[0].power;
@@ -461,12 +480,8 @@ app.route("/dashboard/company/:cnumber/createjoin")
       `; // FIX THIS: Query will later need to accomadate a drop down menu for all associated companies
       connection.query(sQuery, [cNumber], function(error, results, fields) {
         if (error) {
-          res.render('dashboard', {
-            //FIX THIS: Update Company to actual name
-            banner: "Workspace: Dashboard",
-            fName: req.cookies.userData.fName,
-            errorMsg: error
-          })
+          console.log(error);
+          res.redirect("/dashboard/company/" + req.params.cnumber);
         } else {
           var found = false;
           for (let y = 0; y < results.length; y++) {
@@ -487,11 +502,7 @@ app.route("/dashboard/company/:cnumber/createjoin")
               joinCode: null
             })
           } else {
-            res.render('dashboard', {
-              banner: "Workspace: Dashboard",
-              fName: req.cookies.userData.fName,
-              errorMsg: 'You are not an admin or owner of a company with that ID.'
-            })
+            res.redirect("/dashboard/company/" + req.params.cnumber);
           }
         }
       })
@@ -685,6 +696,10 @@ app.get("/logout", function(req, res) {
     res.redirect("/");
   }
 })
+
+
+
+
 
 app.get("/profile/:userid", function(req, res) {})
 

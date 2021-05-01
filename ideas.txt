@@ -33,6 +33,8 @@ create join link may need to be reworked
 
  Make a back button button that leads back to the company dashboarrd
 
+Should be able to pin companies in some way
+
  Add companies to basic dashboard
 
 Add announcements table
