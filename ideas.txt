@@ -34,3 +34,7 @@ create join link may need to be reworked
  Make a back button button that leads back to the company dashboarrd
 
  Add companies to basic dashboard
+
+Add announcements table
+
+Add employee management for owners and admins

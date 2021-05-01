@@ -34,7 +34,13 @@
           <button type="submit" class="btn btn-light">Add User</button>
         </form>
       </td>
-      <td scope="col"> Delete User Button </td>
+      <td scope="col">
+        <form action='<%= '/dashboard/company/'+ cid  + /verify/%>' method='POST'>
+          <input type='hidden' name='code' value='<%= ndAppr[r].userID %>'>
+          <input type='hidden' name='contract' value='deluser'>
+          <button type="submit" class="btn btn-light">Delete User</button>
+        </form>
+      </td>
     </tr>
     <% } %>
   </tbody>
