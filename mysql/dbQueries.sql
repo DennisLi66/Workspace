@@ -29,3 +29,6 @@ select * from employeesInCompany left join company on company.companyID = employ
 -- Show those needing verification
 -- select * from joinApproval left join users on users.userID = joinApproval.userID
 -- WHERE companyID = ?;
+
+
+-- Search for announcements for a specific employee

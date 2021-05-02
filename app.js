@@ -697,7 +697,65 @@ app.get("/logout", function(req, res) {
   }
 })
 
-
+app.get("/dashboard/announcements",function(req,res){
+  if (req.cookies.userData){
+    var offset = null;
+    var sQuery =
+    `
+    SELECT * FROM announcements
+    `;
+    if (req.query.offset){
+      offset = req.query.offset;
+    }
+    connection.query()
+  }
+  else{
+    res.redirect("/login");
+  }
+}) //should also have pagination
+app.route("/dashboard/announcements/:cnumber") //also have an offset for pagination
+  .get(function(req,res){
+    if (req.cookies.userData){
+      var offset = 0;
+      var power = 0;
+      if (req.query.offset){
+        offset = req.query.offset;
+      }
+      var sQuery =
+      `
+      SELECT * FROM employeesInCompany WHERE companyID = ? AND userID = ? WHERE id >= ?;
+      SELECT * FROM announcements WHERE companyID = ?;
+      `;
+      connection.query(sQuery,[req.params.cnumber,req.cookies.userData.id,offset,req.params.cnumber],function(error,results,fields){
+        if (error){
+          res.render('companyAnnouncements',{
+            fName: req.cookies.userData.fName,
+            banner: 'Workspace: Announcements',
+            errorMsg: error,
+            announcements: [],
+            power: 0,
+            offset: offset
+          })
+        }
+        else if (results[0].length == 0){
+          res.redirect("/dashboard");
+        }
+        else{
+          res.render('companyAnnouncements',{
+            fName: req.cookies.userData.fName,
+            banner: 'Workspace: Announcements',
+            announcements: results[1],
+            errorMsg: null,
+            power: results[0].power,
+            offset: offset
+          })
+        }
+      })
+    }else{
+      res.redirect("/login");
+    }
+  })
+  .post(function(req,res){})
 
 
 
