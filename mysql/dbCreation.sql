@@ -41,8 +41,7 @@ create table joinApproval(
     recency datetime,
     	CONSTRAINT LL PRIMARY KEY (userID,companyID)
 );
-
-create table annoucements(
+create table announcements(
 	id int not null auto_increment primary key,
 	companyID int not null,
     title varchar(255) not null,

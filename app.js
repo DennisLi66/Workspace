@@ -155,7 +155,7 @@ app.route("/login")
                 temporary: false
               }
               res.cookie("userData", cookieObj, {
-                expires: new Date(900000 + Date.now())
+                expires: new Date(10000000 + Date.now())
               });
               res.redirect("/dashboard");
             } else {
@@ -181,12 +181,11 @@ app.get("/dashboard", function(req, res) {
   if (req.cookies.userData) {
     var employedAt = null;
     var sQuery =
-    `
+      `
     select userID, company.companyID as companyID, cName as title from employeesInCompany left join company on company.companyID = employeesInCompany.companyID WHERE userid = ?;
-    `
-    ;
-    connection.query(sQuery,[req.cookies.userData.id],function(error,results,fields){
-      if (error){
+    `;
+    connection.query(sQuery, [req.cookies.userData.id], function(error, results, fields) {
+      if (error) {
         console.log(error);
         employedAt = null;
         res.render("dashboard", {
@@ -195,8 +194,7 @@ app.get("/dashboard", function(req, res) {
           empl: employedAt,
           errorMsg: null
         })
-      }
-      else{
+      } else {
         employedAt = results;
         res.render("dashboard", {
           banner: "Workspace: Dashboard",
@@ -697,65 +695,64 @@ app.get("/logout", function(req, res) {
   }
 })
 
-app.get("/dashboard/announcements",function(req,res){
-  if (req.cookies.userData){
+app.get("/dashboard/announcements", function(req, res) {
+  if (req.cookies.userData) {
     var offset = null;
     var sQuery =
-    `
+      `
     SELECT * FROM announcements
     `;
-    if (req.query.offset){
+    if (req.query.offset) {
       offset = req.query.offset;
     }
     connection.query()
-  }
-  else{
+  } else {
     res.redirect("/login");
   }
 }) //should also have pagination
 app.route("/dashboard/announcements/:cnumber") //also have an offset for pagination
-  .get(function(req,res){
-    if (req.cookies.userData){
+  .get(function(req, res) {
+    if (req.cookies.userData) {
       var offset = 0;
       var power = 0;
-      if (req.query.offset){
+      if (req.query.offset) {
         offset = req.query.offset;
       }
       var sQuery =
-      `
-      SELECT * FROM employeesInCompany WHERE companyID = ? AND userID = ? WHERE id >= ?;
-      SELECT * FROM announcements WHERE companyID = ?;
+        `
+      SELECT * FROM employeesInCompany WHERE companyID = ? AND userID = ?;
+      SELECT * FROM announcements WHERE companyID = ? LIMIT 10 OFFSET ?;
       `;
-      connection.query(sQuery,[req.params.cnumber,req.cookies.userData.id,offset,req.params.cnumber],function(error,results,fields){
-        if (error){
-          res.render('companyAnnouncements',{
+      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id, req.params.cnumber, offset], function(error, results, fields) {
+        if (error) {
+          res.render('companyAnnouncements', {
             fName: req.cookies.userData.fName,
             banner: 'Workspace: Announcements',
             errorMsg: error,
-            announcements: [],
+            announcements: null,
             power: 0,
-            offset: offset
+            offset: offset,
+            cid: req.params.cnumber
           })
-        }
-        else if (results[0].length == 0){
+        } else if (results[0].length == 0) {
           res.redirect("/dashboard");
-        }
-        else{
-          res.render('companyAnnouncements',{
+        } else {
+          res.render('companyAnnouncements', {
             fName: req.cookies.userData.fName,
             banner: 'Workspace: Announcements',
             announcements: results[1],
             errorMsg: null,
-            power: results[0].power,
-            offset: offset
+            power: results[0][0].power,
+            offset: offset,
+            cid: req.params.cnumber
           })
         }
       })
-    }else{
+    } else {
       res.redirect("/login");
     }
   })
-  .post(function(req,res){})
+  .post(function(req, res) {}) //delete and adding
 
 
 

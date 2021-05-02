@@ -3,5 +3,45 @@
 <% if (errorMsg){ %>
 <%= errorMsg %>
 <% } %>
+<h2> Announcements </h2>
+<%if (power > 0) { %>
+<button id="addButton" onclick='javascript:toggleAnnouncement()'> Show Announcement Maker</button><br>
+<div id="addContent" style="text-align:center">
+  <input type="hidden" id="contentOpen" value='closed'>
+  <form action="<%= '/dashboard/announcements/' + cid %>" action="POST">
+    <label for='title'>Title:</label><br>
+    <input type="text" name="title">
+    <input type="hidden" name="contract" value="addAnn"><br>
+    <label for='content'>Content:</label><br>
+    <textarea id="w3review" name="content" rows="4" cols="50">
+    </textarea><br>
+    <button type="submit" class="btn btn-light">Add Announcement</button>
+  </form>
+</div>
+<% } %>
+<% if (!announcements || announcements.length == 0){ %>
+There are no announcements to show.
+<% }else{ %>
+<% for(let t = 0; t < announcements.length; t++){ %>
+<div class="row" style="width:100%">
+  <div class="card" style="text-align:center; background-color:tan; padding: 10px">
+    <div class="card-header">
+      <h4><%= announcements[t].title %></h4>
+    </div>
+    <p class="lead"> <%= announcements[t].content %></p>
 
+    <% if (power > 0){%>
+    <p class="lead" style="text-align:right">
+    <form action="<%= '/dashboard/announcements/' + cid %>" action="POST" style="text-align:right">
+      <input type="hidden" name="contract" value="delAnn">
+      <input type="hidden" name="aid" value="<%=  %>">
+      <button type="submit" class="btn btn-danger">Delete Announcement</button>
+    </form>
+    </p>
+    <% } %>
+  </div>
+</div>
+
+<% } %>
+<% } %>
 <%- include('partials/footer') %>
