@@ -721,7 +721,7 @@ app.route("/dashboard/announcements/:cnumber") //also have an offset for paginat
       var sQuery =
         `
       SELECT * FROM employeesInCompany WHERE companyID = ? AND userID = ?;
-      SELECT * FROM announcements WHERE companyID = ? LIMIT 10 OFFSET ?;
+      SELECT * FROM announcements WHERE companyID = ? ORDER BY id DESC LIMIT 10 OFFSET ?;
       `;
       connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id, req.params.cnumber, offset], function(error, results, fields) {
         if (error) {
@@ -752,7 +752,48 @@ app.route("/dashboard/announcements/:cnumber") //also have an offset for paginat
       res.redirect("/login");
     }
   })
-  .post(function(req, res) {}) //delete and adding
+  .post(function(req, res) {
+    if (req.cookies.userData) {
+      if (req.body.contract !== 'addAnn' && req.body.contract !== 'delAnn') {
+        console.log("Invalid Post Request");
+        res.redirect("/dashboard/announcements/" + req.params.cnumber);
+      } else {
+        var sQuery =
+          `
+        select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID
+        WHERE(power = 1 or power = 2) AND userID = ? and company.companyID = ?;
+        `;
+        connection.query(sQuery,[req.cookies.userData.id,req.params.cnumber],function(errors, results, fields) {
+          if (results.length == 0){
+            res.redirect("/dashboard/announcements/" + req.params.cnumber);
+          }
+          else{
+            if (req.body.contract === 'addAnn') {
+              var iQuery =
+              `
+              INSERT INTO announcements (companyID,title,content,author,recency) VALUES ();
+              `;
+
+            } else if (req.body.contract === 'delAnn') {
+                var dQuery =
+                `
+                DELETE FROM announcements WHERE id = ?;
+                `;
+                connection.query(dQuery,[req.body.aid],function(error,result,field){
+                  if (error){
+                    console.log(error);
+                  }
+                    res.redirect("/dashboard/announcements/" + req.params.cnumber);
+                })
+
+            }
+          }
+        })
+      }
+    } else {
+      res.redirect("/login");
+    }
+  }) //delete and adding
 
 
 

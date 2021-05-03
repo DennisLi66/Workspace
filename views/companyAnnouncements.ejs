@@ -8,7 +8,7 @@
 <button id="addButton" onclick='javascript:toggleAnnouncement()'> Show Announcement Maker</button><br>
 <div id="addContent" style="text-align:center">
   <input type="hidden" id="contentOpen" value='closed'>
-  <form action="<%= '/dashboard/announcements/' + cid %>" action="POST">
+  <form action="<%= '/dashboard/announcements/' + cid %>" method="POST">
     <label for='title'>Title:</label><br>
     <input type="text" name="title">
     <input type="hidden" name="contract" value="addAnn"><br>
@@ -31,13 +31,13 @@ There are no announcements to show.
     <p class="lead"> <%= announcements[t].content %></p>
 
     <% if (power > 0){%>
-    <p class="lead" style="text-align:right">
-    <form action="<%= '/dashboard/announcements/' + cid %>" action="POST" style="text-align:right">
+
+    <form action= <%= '/dashboard/announcements/' + cid %> method="POST" style="text-align:right">
       <input type="hidden" name="contract" value="delAnn">
-      <input type="hidden" name="aid" value="<%=  %>">
+      <input type="hidden" name="aid" value="<%= announcements[t].id  %>">
       <button type="submit" class="btn btn-danger">Delete Announcement</button>
     </form>
-    </p>
+
     <% } %>
   </div>
 </div>
