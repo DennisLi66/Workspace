@@ -788,10 +788,82 @@ app.route("/dashboard/announcements/:cnumber") //also have an offset for paginat
       res.redirect("/login");
     }
   })
-app.get("/dashboard/announcement/:aid",function(req,res){
-  //get one very specific announcement
-})
-
+app.route("/dashboard/announcement/:aid")
+  .get(function(req, res) {
+    //get one very specific announcement
+    if (req.cookies.userData) {
+      var cQuery =
+        `
+    SELECT id,authorID,announcements.companyID,announcements.title,content,recency,firstName,lastName, employeesincompany.userID, power
+    FROM announcements left join users on users.userID = announcements.authorID
+    left join employeesInCompany ON announcements.companyID = employeesInCompany.companyID
+    WHERE employeesincompany.userID = ? AND id = ?;
+    `;
+      connection.query(cQuery, [req.cookies.userData.id, req.params.aid], function(error, results, fields) {
+        if (error) {
+          console.log(error);
+          res.render('specificAnnouncement', {
+            banner: 'Workspace: Announcement ID ' + req.params.aid,
+            fName: req.cookies.userData.fName,
+            result: results,
+            truth: null
+          });
+        } else {
+          res.render('specificAnnouncement', {
+            banner: 'Workspace: Announcement ID ' + req.params.aid,
+            fName: req.cookies.userData.fName,
+            result: results,
+            truth: null
+          });
+        }
+      })
+    } else {
+      res.redirect("/login");
+    }
+  })
+  .post(function(req, res) {
+    if (req.cookies.userData){
+      var sQuery =
+      `
+        SELECT id,authorID,announcements.companyID,announcements.title,content,recency,firstName,lastName, employeesincompany.userID, power
+        FROM announcements left join users on users.userID = announcements.authorID
+        left join employeesInCompany ON announcements.companyID = employeesInCompany.companyID
+        WHERE employeesincompany.userID = ? AND id = ? AND (power = 1 or power = 2);
+      `;
+      connection.query(sQuery,[req.cookies.userData.id,req.params.aid],function(er,re,fi){
+        if ( er || re.length == 0){
+          res.render('specificAnnouncement',{
+            banner: 'Workspace: Announcement ID ' + req.params.aid,
+            fName: req.cookies.userData.fName,
+            result: null,
+            truth: null
+          })
+        }
+        else{
+          var dQuery =
+          `
+          DELETE FROM announcements WHERE id = ?;
+          `;
+          connection.query(dQuery,[req.params.aid],function(error,results,fields){
+            if (error){
+              console.log(error);
+              res.redirect("/dashboard/announcement/" + req.params.aid);
+            }
+            else{
+              res.render('specificAnnouncement',{
+                banner: 'Workspace: Announcement ID ' + req.params.aid,
+                fName: req.cookies.userData.fName,
+                result: null,
+                truth: true
+              })
+            }
+          })
+        }
+      })
+    }else{
+      res.redirect("/login");
+    }
+  })
 
 app.get("/profile/:userid", function(req, res) {})
 

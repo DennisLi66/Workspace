@@ -1,0 +1,35 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<% if (!truth && (!result || result.length == 0)){ %>
+An announcement with that ID does not exist, or you do not have access to it.
+<% } else if (truth) { %>
+The announcement has been deleted.
+<%}else{ %>
+
+<div class="row" style="width:100%">
+  <div class="card" style="text-align:center; background-color:tan; padding: 10px">
+    <div class="card-header">
+      <h4><%= result[0].title %></h4>
+      From: <%= result[0].firstName + ' ' + result[0].lastName %><br>
+      Date: <%= result[0].recency %>
+    </div>
+
+    <div class="card-body">
+      <p class="lead"> <%= result[0].content %></p>
+    </div>
+
+    <% if (result[0].power > 0){%>
+    <div class="card-footer">
+      <form action=<%= '/dashboard/announcement/' + result[0].id %> method="POST" style="text-align:right">
+        <input type="hidden" name="contract" value="delAnn">
+        <button type="submit" class="btn btn-danger">Delete Announcement</button>
+      </form>
+    </div>
+    <% } %>
+
+
+
+
+    <% } %>
+    <%- include('partials/footer') %>
