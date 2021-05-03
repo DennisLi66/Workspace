@@ -32,3 +32,5 @@ select * from employeesInCompany left join company on company.companyID = employ
 
 -- select * from users where userId >= 0
 -- Search for announcements for a specific employee
+
+SELECT * FROM announcements left join users on users.userID = announcements.authorID

@@ -8,6 +8,7 @@
 <button id="addButton" onclick='javascript:toggleAnnouncement()'> Show Announcement Maker</button><br>
 <div id="addContent" style="text-align:center">
   <input type="hidden" id="contentOpen" value='closed'>
+  <br>
   <form action="<%= '/dashboard/announcements/' + cid %>" method="POST">
     <label for='title'>Title:</label><br>
     <input type="text" name="title">
@@ -17,6 +18,7 @@
     </textarea><br>
     <button type="submit" class="btn btn-light">Add Announcement</button>
   </form>
+  <br>
 </div>
 <% } %>
 <% if (!announcements || announcements.length == 0){ %>
@@ -27,17 +29,20 @@ There are no announcements to show.
   <div class="card" style="text-align:center; background-color:tan; padding: 10px">
     <div class="card-header">
       <h4><%= announcements[t].title %></h4>
+      From: <%= announcements[t].firstName + ' ' + announcements[t].lastName %><br>
+      Date: <%= announcements[t].recency %>
     </div>
-    <p class="lead"> <%= announcements[t].content %></p>
-
+    <div class="card-body">
+      <p class="lead"> <%= announcements[t].content %></p>
+    </div>
     <% if (power > 0){%>
-
-    <form action= <%= '/dashboard/announcements/' + cid %> method="POST" style="text-align:right">
-      <input type="hidden" name="contract" value="delAnn">
-      <input type="hidden" name="aid" value="<%= announcements[t].id  %>">
-      <button type="submit" class="btn btn-danger">Delete Announcement</button>
-    </form>
-
+    <div class="card-footer">
+      <form action=<%= '/dashboard/announcements/' + cid %> method="POST" style="text-align:right">
+        <input type="hidden" name="contract" value="delAnn">
+        <input type="hidden" name="aid" value="<%= announcements[t].id  %>">
+        <button type="submit" class="btn btn-danger">Delete Announcement</button>
+      </form>
+    </div>
     <% } %>
   </div>
 </div>

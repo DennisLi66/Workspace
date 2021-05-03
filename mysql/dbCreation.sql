@@ -43,6 +43,7 @@ create table joinApproval(
 );
 create table announcements(
 	id int not null auto_increment primary key,
+    authorID int not null,
 	companyID int not null,
     title varchar(255) not null,
     content text not null,

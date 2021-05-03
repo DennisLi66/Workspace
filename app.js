@@ -697,14 +697,10 @@ app.get("/logout", function(req, res) {
 
 app.get("/dashboard/announcements", function(req, res) {
   if (req.cookies.userData) {
-    var offset = null;
     var sQuery =
       `
     SELECT * FROM announcements
     `;
-    if (req.query.offset) {
-      offset = req.query.offset;
-    }
     connection.query()
   } else {
     res.redirect("/login");
@@ -713,17 +709,13 @@ app.get("/dashboard/announcements", function(req, res) {
 app.route("/dashboard/announcements/:cnumber") //also have an offset for pagination
   .get(function(req, res) {
     if (req.cookies.userData) {
-      var offset = 0;
       var power = 0;
-      if (req.query.offset) {
-        offset = req.query.offset;
-      }
       var sQuery =
         `
       SELECT * FROM employeesInCompany WHERE companyID = ? AND userID = ?;
-      SELECT * FROM announcements WHERE companyID = ? ORDER BY id DESC LIMIT 10 OFFSET ?;
+      SELECT * FROM announcements left join users on users.userID = announcements.authorID WHERE companyID = ? ORDER BY id DESC;
       `;
-      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id, req.params.cnumber, offset], function(error, results, fields) {
+      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id, req.params.cnumber], function(error, results, fields) {
         if (error) {
           res.render('companyAnnouncements', {
             fName: req.cookies.userData.fName,
@@ -731,7 +723,6 @@ app.route("/dashboard/announcements/:cnumber") //also have an offset for paginat
             errorMsg: error,
             announcements: null,
             power: 0,
-            offset: offset,
             cid: req.params.cnumber
           })
         } else if (results[0].length == 0) {
@@ -743,7 +734,6 @@ app.route("/dashboard/announcements/:cnumber") //also have an offset for paginat
             announcements: results[1],
             errorMsg: null,
             power: results[0][0].power,
-            offset: offset,
             cid: req.params.cnumber
           })
         }
@@ -763,28 +753,32 @@ app.route("/dashboard/announcements/:cnumber") //also have an offset for paginat
         select * from employeesInCompany left join company on company.companyID = employeesInCompany.companyID
         WHERE(power = 1 or power = 2) AND userID = ? and company.companyID = ?;
         `;
-        connection.query(sQuery,[req.cookies.userData.id,req.params.cnumber],function(errors, results, fields) {
-          if (results.length == 0){
+        connection.query(sQuery, [req.cookies.userData.id, req.params.cnumber], function(errors, results, fields) {
+          if (results.length == 0) {
             res.redirect("/dashboard/announcements/" + req.params.cnumber);
-          }
-          else{
+          } else {
             if (req.body.contract === 'addAnn') {
               var iQuery =
-              `
-              INSERT INTO announcements (companyID,title,content,author,recency) VALUES ();
+                `
+              INSERT INTO announcements (companyID,authorID,title,content,recency) VALUES (?,?,?,?,NOW());
               `;
-
+              connection.query(iQuery, [req.params.cnumber, req.cookies.userData.id, req.body.title, req.body.content], function(errors, results, fields) {
+                if (errors) {
+                  console.log(errors);
+                }
+                res.redirect("/dashboard/announcements/" + req.params.cnumber);
+              })
             } else if (req.body.contract === 'delAnn') {
-                var dQuery =
+              var dQuery =
                 `
                 DELETE FROM announcements WHERE id = ?;
                 `;
-                connection.query(dQuery,[req.body.aid],function(error,result,field){
-                  if (error){
-                    console.log(error);
-                  }
-                    res.redirect("/dashboard/announcements/" + req.params.cnumber);
-                })
+              connection.query(dQuery, [req.body.aid], function(error, result, field) {
+                if (error) {
+                  console.log(error);
+                }
+                res.redirect("/dashboard/announcements/" + req.params.cnumber);
+              })
 
             }
           }
@@ -793,8 +787,10 @@ app.route("/dashboard/announcements/:cnumber") //also have an offset for paginat
     } else {
       res.redirect("/login");
     }
-  }) //delete and adding
-
+  })
+app.get("/dashboard/announcement/:aid",function(req,res){
+  //get one very specific announcement
+})
 
 
 app.get("/profile/:userid", function(req, res) {})

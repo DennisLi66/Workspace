@@ -1,3 +1,4 @@
+//Creating Join Links
 function joinLinkToggle() {
   var t = document.getElementById('toggs').checked;
   if (t) {
@@ -8,7 +9,6 @@ function joinLinkToggle() {
     document.getElementById('toggler').value = 'no';
   }
 }
-
 function joinLinkToggle2() {
   var t = document.getElementById('toggs2').checked;
   if (t) {
@@ -19,7 +19,7 @@ function joinLinkToggle2() {
     document.getElementById('toggler2').value = 'no';
   }
 }
-
+//Announcement Page
 function toggleAnnouncement() {
   var checkme = document.getElementById('contentOpen').value;
   console.log(checkme);
@@ -33,3 +33,4 @@ function toggleAnnouncement() {
     document.getElementById('addButton').innerText = 'Show Announcement Maker';
   }
 }
+function next10(){}
