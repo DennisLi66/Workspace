@@ -6,60 +6,63 @@
 <h2> Announcements </h2>
 
 <script>
-   var mysqlres = '<%- JSON.stringify(announcements) %>'
+  var mysqlres = '<%- JSON.stringify(announcements) %>'
 </script>
 
-<input type="hidden" value=<%= Math.min(announcements.length,10) %> id='indexe'>
+<input type="hidden" value='0' id='indexe'>
 <div id="contenee">
-<%if (power > 0) { %>
-<button id="addButton" onclick='javascript:toggleAnnouncement()'> Show Announcement Maker</button><br>
-<div id="addContent" style="text-align:center">
-  <input type="hidden" id="contentOpen" value='closed'>
-  <br>
-  <form action="<%= '/dashboard/announcements/' + cid %>" method="POST">
-    <label for='title'>Title:</label><br>
-    <input type="text" name="title">
-    <input type="hidden" name="contract" value="addAnn"><br>
-    <label for='content'>Content:</label><br>
-    <textarea id="w3review" name="content" rows="4" cols="50">
+  <%if (power > 0) { %>
+  <button id="addButton" onclick='javascript:toggleAnnouncement()'> Show Announcement Maker</button><br>
+  <div id="addContent" style="text-align:center">
+    <input type="hidden" id="contentOpen" value='closed'>
+    <br>
+    <form action="<%= '/dashboard/announcements/' + cid %>" method="POST">
+      <label for='title'>Title:</label><br>
+      <input type="text" name="title">
+      <input type="hidden" name="contract" value="addAnn"><br>
+      <label for='content'>Content:</label><br>
+      <textarea id="w3review" name="content" rows="4" cols="50">
     </textarea><br>
-    <button type="submit" class="btn btn-light">Add Announcement</button>
-  </form>
-  <br>
-</div>
-<% } %>
-<% if (!announcements || announcements.length == 0){ %>
-There are no announcements to show.
-<% }else{ %>
-<% for(let t = 0; t < Math.min(announcements.length,10); t++){ %>
-
-
-<div class="row" style="width:100%">
-  <div class="card" style="text-align:center; background-color:tan; padding: 10px">
-    <div class="card-header">
-      <h4><%= announcements[t].title %></h4>
-      From: <%= announcements[t].firstName + ' ' + announcements[t].lastName %><br>
-      Date: <%= announcements[t].recency %>
-    </div>
-    <div class="card-body">
-      <p class="lead"> <%= announcements[t].content %></p>
-    </div>
-    <% if (power > 0){%>
-    <div class="card-footer">
-      <form action=<%= '/dashboard/announcements/' + cid %> method="POST" style="text-align:right">
-        <input type="hidden" name="contract" value="delAnn">
-        <input type="hidden" name="aid" value="<%= announcements[t].id  %>">
-        <button type="submit" class="btn btn-danger">Delete Announcement</button>
-      </form>
-    </div>
-    <% } %>
+      <button type="submit" class="btn btn-light">Add Announcement</button>
+    </form>
+    <br>
   </div>
-</div>
-<% } %>
+  <% } %>
+  <% if (!announcements || announcements.length == 0){ %>
+  There are no announcements to show.
+  <% }else{ %>
+  <% for(let t = 0; t < Math.min(announcements.length,10); t++){ %>
 
 
-<% } %>
-<button onclick="javascript:next10(<%= power %>)"> Next 10 Announcements </button>
+  <div class="row" style="width:100%">
+    <div class="card" style="text-align:center; background-color:tan; padding: 10px">
+      <div class="card-header">
+        <h4><%= announcements[t].title %></h4>
+        ID: <a href=<%="/dashboard/announcement/" + announcements[t].id %> ><%= announcements[t].id %></a><br>
+        From: <%= announcements[t].firstName + ' ' + announcements[t].lastName %><br>
+        Date: <%= announcements[t].recency %>
+      </div>
+      <div class="card-body">
+        <p class="lead"> <%= announcements[t].content %></p>
+      </div>
+      <% if (power > 0){%>
+      <div class="card-footer">
+        <form action=<%= '/dashboard/announcements/' + cid %> method="POST" style="text-align:right">
+          <input type="hidden" name="contract" value="delAnn">
+          <input type="hidden" name="aid" value="<%= announcements[t].id  %>">
+          <button type="submit" class="btn btn-danger">Delete Announcement</button>
+        </form>
+      </div>
+      <% } %>
+    </div>
+  </div>
+  <% } %>
+
+
+  <% } %>
+  <% if (announcements.length > 10){ %>
+  <button onclick="javascript:next10(<%= power %>)"> Next 10 Announcements </button>
+  <% }  %>
 </div>
 
 
