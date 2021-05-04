@@ -21,7 +21,7 @@ The announcement has been deleted.
 
     <% if (result[0].power > 0){%>
     <div class="card-footer">
-      <form action=<%= '/dashboard/announcement/' + result[0].id %> method="POST" style="text-align:right">
+      <form action=<%= '/announcement/' + result[0].id %> method="POST" style="text-align:right">
         <input type="hidden" name="contract" value="delAnn">
         <button type="submit" class="btn btn-danger">Delete Announcement</button>
       </form>

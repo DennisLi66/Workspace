@@ -50,7 +50,7 @@ function prev10(power) {
     htmlToAdd += '<div class="card" style="text-align:center; background-color:tan; padding: 10px">';
     htmlToAdd += '<div class="card-header">';
     htmlToAdd += '<h4>' + arr[y + index].title + '</h4>';
-    htmlToAdd += 'ID: <a href="/dashboard/announcement/' + arr[y + index].id + '">' + arr[y + index].id + '</a><br>';
+    htmlToAdd += 'ID: <a href="/announcement/' + arr[y + index].id + '">' + arr[y + index].id + '</a><br>';
     htmlToAdd += 'From: ' + arr[y + index].firstName + arr[y + index].lastName + '<br>';
     htmlToAdd += 'Date: ' + new Date(arr[y + index].recency);
     htmlToAdd += '</div>';
@@ -59,7 +59,7 @@ function prev10(power) {
     htmlToAdd += '</div>';
     if (power > 0) {
       htmlToAdd += "<div class='card-footer'>";
-      htmlToAdd += '<form action="' + '/dashboard/announcements/' + arr[y + index].companyID + '" method="POST" style="text-align:right">';
+      htmlToAdd += '<form action="' + '/announcements/' + arr[y + index].companyID + '" method="POST" style="text-align:right">';
       htmlToAdd += '<input type="hidden" name="contract" value="delAnn">';
       htmlToAdd += '<input type="hidden" name="aid" value="' + arr[y + index].id + '">';
       htmlToAdd += '<button type="submit" class="btn btn-danger">Delete Announcement</button>';
@@ -88,7 +88,7 @@ function next10(power) {
     htmlToAdd += '<div class="card" style="text-align:center; background-color:tan; padding: 10px">';
     htmlToAdd += '<div class="card-header">';
     htmlToAdd += '<h4>' + arr[y + index].title + '</h4>';
-    htmlToAdd += 'ID: <a href="/dashboard/announcement/' + arr[y + index].id + '">' + arr[y + index].id + '</a><br>';
+    htmlToAdd += 'ID: <a href="/announcement/' + arr[y + index].id + '">' + arr[y + index].id + '</a><br>';
     htmlToAdd += 'From: ' + arr[y + index].firstName + arr[y + index].lastName + '<br>';
     htmlToAdd += 'Date: ' + new Date(arr[y + index].recency);
     htmlToAdd += '</div>';
@@ -97,7 +97,7 @@ function next10(power) {
     htmlToAdd += '</div>';
     if (power > 0) {
       htmlToAdd += "<div class='card-footer'>";
-      htmlToAdd += '<form action="' + '/dashboard/announcements/' + arr[y + index].companyID + '" method="POST" style="text-align:right">';
+      htmlToAdd += '<form action="' + '/announcements/' + arr[y + index].companyID + '" method="POST" style="text-align:right">';
       htmlToAdd += '<input type="hidden" name="contract" value="delAnn">';
       htmlToAdd += '<input type="hidden" name="aid" value="' + arr[y + index].id + '">';
       htmlToAdd += '<button type="submit" class="btn btn-danger">Delete Announcement</button>';

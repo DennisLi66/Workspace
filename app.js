@@ -704,7 +704,7 @@ app.get("/logout", function(req, res) {
   }
 })
 
-app.get("/dashboard/announcements", function(req, res) {
+app.get("/announcements", function(req, res) {
   if (req.cookies.userData) {
     var sQuery =
     `
@@ -735,7 +735,7 @@ app.get("/dashboard/announcements", function(req, res) {
     res.redirect("/login");
   }
 })
-app.route("/dashboard/announcements/:cnumber")
+app.route("/announcements/:cnumber")
   .get(function(req, res) {
     if (req.cookies.userData) {
       var power = 0;
@@ -775,7 +775,7 @@ app.route("/dashboard/announcements/:cnumber")
     if (req.cookies.userData) {
       if (req.body.contract !== 'addAnn' && req.body.contract !== 'delAnn') {
         console.log("Invalid Post Request");
-        res.redirect("/dashboard/announcements/" + req.params.cnumber);
+        res.redirect("/announcements/" + req.params.cnumber);
       } else {
         var sQuery =
           `
@@ -784,7 +784,7 @@ app.route("/dashboard/announcements/:cnumber")
         `;
         connection.query(sQuery, [req.cookies.userData.id, req.params.cnumber], function(errors, results, fields) {
           if (results.length == 0) {
-            res.redirect("/dashboard/announcements/" + req.params.cnumber);
+            res.redirect("/announcements/" + req.params.cnumber);
           } else {
             if (req.body.contract === 'addAnn') {
               var iQuery =
@@ -795,7 +795,7 @@ app.route("/dashboard/announcements/:cnumber")
                 if (errors) {
                   console.log(errors);
                 }
-                res.redirect("/dashboard/announcements/" + req.params.cnumber);
+                res.redirect("/announcements/" + req.params.cnumber);
               })
             } else if (req.body.contract === 'delAnn') {
               var dQuery =
@@ -806,7 +806,7 @@ app.route("/dashboard/announcements/:cnumber")
                 if (error) {
                   console.log(error);
                 }
-                res.redirect("/dashboard/announcements/" + req.params.cnumber);
+                res.redirect("/announcements/" + req.params.cnumber);
               })
 
             }
@@ -817,7 +817,7 @@ app.route("/dashboard/announcements/:cnumber")
       res.redirect("/login");
     }
   })
-app.route("/dashboard/announcement/:aid")
+app.route("/announcement/:aid")
   .get(function(req, res) {
     //get one very specific announcement
     if (req.cookies.userData) {
@@ -876,7 +876,7 @@ app.route("/dashboard/announcement/:aid")
           connection.query(dQuery,[req.params.aid],function(error,results,fields){
             if (error){
               console.log(error);
-              res.redirect("/dashboard/announcement/" + req.params.aid);
+              res.redirect("/announcement/" + req.params.aid);
             }
             else{
               res.render('specificAnnouncement',{
@@ -893,6 +893,10 @@ app.route("/dashboard/announcement/:aid")
       res.redirect("/login");
     }
   })
+app.route("/employees/:cnumber")
+  .get(function(req,res){})
+  .post(function(req,res){})
+
 
 app.get("/profile/:userid", function(req, res) {})
 

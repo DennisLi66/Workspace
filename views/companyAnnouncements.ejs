@@ -16,7 +16,7 @@
   <div id="addContent" style="text-align:center">
     <input type="hidden" id="contentOpen" value='closed'>
     <br>
-    <form action="<%= '/dashboard/announcements/' + cid %>" method="POST">
+    <form action="<%= '/announcements/' + cid %>" method="POST">
       <label for='title'>Title:</label><br>
       <input type="text" name="title">
       <input type="hidden" name="contract" value="addAnn"><br>
@@ -38,7 +38,7 @@
     <div class="card" style="text-align:center; background-color:tan; padding: 10px">
       <div class="card-header">
         <h4><%= announcements[t].title %></h4>
-        ID: <a href=<%="/dashboard/announcement/" + announcements[t].id %> ><%= announcements[t].id %></a><br>
+        ID: <a href=<%="/announcement/" + announcements[t].id %> ><%= announcements[t].id %></a><br>
         From: <%= announcements[t].firstName + ' ' + announcements[t].lastName %><br>
         Date: <%= announcements[t].recency %>
       </div>
@@ -47,7 +47,7 @@
       </div>
       <% if (power > 0){%>
       <div class="card-footer">
-        <form action=<%= '/dashboard/announcements/' + cid %> method="POST" style="text-align:right">
+        <form action=<%= '/announcements/' + cid %> method="POST" style="text-align:right">
           <input type="hidden" name="contract" value="delAnn">
           <input type="hidden" name="aid" value="<%= announcements[t].id  %>">
           <button type="submit" class="btn btn-danger">Delete Announcement</button>
