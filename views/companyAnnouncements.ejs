@@ -4,6 +4,13 @@
 <%= errorMsg %>
 <% } %>
 <h2> Announcements </h2>
+
+<script>
+   var mysqlres = '<%- JSON.stringify(announcements) %>'
+</script>
+
+<input type="hidden" value=<%= Math.min(announcements.length,10) %> id='indexe'>
+<div id="contenee">
 <%if (power > 0) { %>
 <button id="addButton" onclick='javascript:toggleAnnouncement()'> Show Announcement Maker</button><br>
 <div id="addContent" style="text-align:center">
@@ -24,7 +31,9 @@
 <% if (!announcements || announcements.length == 0){ %>
 There are no announcements to show.
 <% }else{ %>
-<% for(let t = 0; t < announcements.length; t++){ %>
+<% for(let t = 0; t < Math.min(announcements.length,10); t++){ %>
+
+
 <div class="row" style="width:100%">
   <div class="card" style="text-align:center; background-color:tan; padding: 10px">
     <div class="card-header">
@@ -46,7 +55,12 @@ There are no announcements to show.
     <% } %>
   </div>
 </div>
+<% } %>
+
 
 <% } %>
-<% } %>
+<button onclick="javascript:next10(<%= power %>)"> Next 10 Announcements </button>
+</div>
+
+
 <%- include('partials/footer') %>
