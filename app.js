@@ -183,24 +183,33 @@ app.get("/dashboard", function(req, res) {
     var sQuery =
       `
     select userID, company.companyID as companyID, cName as title from employeesInCompany left join company on company.companyID = employeesInCompany.companyID WHERE userid = ?;
+    SELECT id,authorID,announcements.companyID,cName,announcements.title,content,recency,firstName,lastName, employeesincompany.userID, power
+    FROM announcements left join users on users.userID = announcements.authorID
+    left join company on company.companyID = announcements.companyID
+    left join employeesInCompany ON announcements.companyID = employeesInCompany.companyID
+    WHERE employeesInCompany.userID = ?  ORDER BY id DESC LIMIT 3
     `;
-    connection.query(sQuery, [req.cookies.userData.id], function(error, results, fields) {
+    connection.query(sQuery, [req.cookies.userData.id,req.cookies.userData.id], function(error, results, fields) {
       if (error) {
         console.log(error);
         employedAt = null;
+        announcements = null;
         res.render("dashboard", {
           banner: "Workspace: Dashboard",
           fName: req.cookies.userData.fName,
           empl: employedAt,
-          errorMsg: null
+          errorMsg: null,
+          announcements: announcements
         })
       } else {
-        employedAt = results;
+        employedAt = results[0];
+        announcements = results[1];
         res.render("dashboard", {
           banner: "Workspace: Dashboard",
           fName: req.cookies.userData.fName,
           empl: employedAt,
-          errorMsg: null
+          errorMsg: null,
+          announcements: announcements
         })
       }
     })
@@ -698,15 +707,35 @@ app.get("/logout", function(req, res) {
 app.get("/dashboard/announcements", function(req, res) {
   if (req.cookies.userData) {
     var sQuery =
-      `
-    SELECT * FROM announcements
+    `
+    SELECT id,authorID,announcements.companyID,announcements.title,content,recency,firstName,lastName, employeesincompany.userID, power
+    FROM announcements left join users on users.userID = announcements.authorID
+    left join employeesInCompany ON announcements.companyID = employeesInCompany.companyID
+    WHERE users.userID = ? ORDER BY id DESC
     `;
-    connection.query()
+    connection.query(sQuery,[req.cookies.userData.id],function(error,results,fields){
+      if (error){
+        console.log(error);
+        res.redirect("/dashboard");
+      }else if (results.length == 0){ //No Announcements to show
+        res.render('myAnnouncements',{
+          announcements: null,
+          banner: "Workspace: Your Announcements",
+          fName: req.cookies.userData.firstName
+        });
+      }else{
+        res.render('myAnnouncements',{
+          announcements: results,
+          banner: "Workspace: Your Announcements",
+          fName: req.cookies.userData.firstName
+        });
+      }
+    })
   } else {
     res.redirect("/login");
   }
-}) //should also have pagination
-app.route("/dashboard/announcements/:cnumber") //also have an offset for pagination
+})
+app.route("/dashboard/announcements/:cnumber")
   .get(function(req, res) {
     if (req.cookies.userData) {
       var power = 0;

@@ -6,6 +6,41 @@
 <a href='/dashboard/create' class="btn btn-info">Create a Company Workspace</a>
 <a href='/dashboard/join' class="btn btn-info">Join a Company Workspace</a>
 
+<h3> Recent Announcements</h3>
+<% if (!announcements){ %>
+  You have no announcements to read.
+<% } else { %>
+  <a href="/dashboard/announcements">View Announcements</a><br>
+
+  <% for(let t = 0; t < announcements.length; t++){ %>
+    <div class="row" style="width:100%">
+      <div class="card" style="text-align:center; background-color:tan; padding: 10px">
+        <div class="card-header">
+          <h4><%= announcements[t].title %></h4>
+          ID: <a href=<%="/dashboard/announcement/" + announcements[t].id %> ><%= announcements[t].id %></a><br>
+          From: <%= announcements[t].firstName + ' ' + announcements[t].lastName + ' of ' + announcements[t].cName %> <br>
+          Date: <%= announcements[t].recency %>
+        </div>
+        <div class="card-body">
+          <p class="lead"> <%= announcements[t].content %></p>
+        </div>
+        <% if (announcements[t].power > 0){%>
+        <div class="card-footer">
+          <form action=<%= '/dashboard/announcements/' + announcements[t].companyID %> method="POST" style="text-align:right">
+            <input type="hidden" name="contract" value="delAnn">
+            <input type="hidden" name="aid" value="<%= announcements[t].id  %>">
+            <button type="submit" class="btn btn-danger">Delete Announcement</button>
+          </form>
+        </div>
+        <% } %>
+      </div>
+    </div>
+
+
+  <% }  %>
+  <% } %>
+
+
 <h3> Quick Switch to Company </h3>
 <% if (empl){ %>
     <table class='table'>
