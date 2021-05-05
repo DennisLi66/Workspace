@@ -1,23 +1,44 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
 
+
+<% if (errorMsg){ %>
+<%=errorMsg%>
+<% } else { %>
 <h2> Employees of <%= companyName %> </h2>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<table class='table'>
+  <thead>
+    <tr>
+      <th scope="col"> User ID </th>
+      <th scope="col"> Name </th>
+      <th scope='col'> Email </th>
+      <th scope='col'> Title </th>
+      <th scope='col'> Site Hierarchy </th>
+      <th scope='col'> Profile </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for (let k = 0 ; k < employees.length; k++){%>
+    <tr>
+      <th scope="col"> <%= employees[k].userID %> </th>
+      <th scope="col"> <%= employees[k].firstName + ' ' + employees[k].lastName %> </th>
+      <th scope='col'> <%= employees[k].email %> </th>
+      <th scope="col"> <%= employees[k].title %> </th>
+      <th scope="col">
+        <% if(employees[k].power == 0 ){%>
+        Employee
+        <%} else if (employees[k].power == 1){%>
+        Admin
+        <%} else{ %>
+        Owner
+        <% } %>
+      </th>
+      <th scope='col'> Profile </th>
+    </tr>
+    <% } %>
+  </tbody>
+</table>
+<% } %>
 
 
 

@@ -721,13 +721,13 @@ app.get("/announcements", function(req, res) {
         res.render('myAnnouncements', {
           announcements: null,
           banner: "Workspace: Your Announcements",
-          fName: req.cookies.userData.firstName
+          fName: req.cookies.userData.fName
         });
       } else {
         res.render('myAnnouncements', {
           announcements: results,
           banner: "Workspace: Your Announcements",
-          fName: req.cookies.userData.firstName
+          fName: req.cookies.userData.fName
         });
       }
     })
@@ -903,27 +903,37 @@ app.route("/employees/:cnumber")
       select users.userID as userID, companyID, title, power, firstName, lastName, email from employeesInCompany
       left join users ON users.userID = employeesInCompany.userID WHERE companyID = ?;
       `
-      connection.query(sQuery, [req.params.cnumber,req.cookies.userData.id,req.params.cnumber], function(error, result, field) {
+      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id, req.params.cnumber], function(error, result, field) {
         if (error) {
           console.log(error);
-          res.redirect("/dashboard");
-        } else if (result[0].length == 0) {
           res.render('employeeList', {
             banner: 'Workspace: Employees of ',
-            fName: req.cookies.userData.firstName,
+            fName: req.cookies.userData.fName,
             employees: null,
             power: null,
             companyName: null,
-            cid: req.params.cnumber
+            cid: req.params.cnumber,
+            errorMsg: error
+          })
+        } else if (result[0].length == 0) {
+          res.render('employeeList', {
+            banner: 'Workspace: Employees of ',
+            fName: req.cookies.userData.fName,
+            employees: null,
+            power: null,
+            companyName: null,
+            cid: req.params.cnumber,
+            errorMsg: 'You are either not a part of this company, or it does not exist.'
           })
         } else {
           res.render('employeeList', {
             banner: 'Workspace: Employees of ',
-            fName: req.cookies.userData.firstName,
+            fName: req.cookies.userData.fName,
             employees: result[1],
             power: result[0][0].power,
             companyName: result[0][0].cName,
-            cid: req.params.cnumber
+            cid: req.params.cnumber,
+            errorMsg: null
           })
         }
       })
@@ -935,13 +945,30 @@ app.route("/employees/:cnumber")
 app.get("/employee/:userid", function(req, res) {
   //employee should only be possible to those with a shared company
   if (req.cookies.userData) {
+    var meQuery =
+      `
+    Get All Companies
+    `
     var sQuery =
       `
+    Compare Companies between self and employee
     `;
   }
 })
-app.get("/employee",function(req,res){}) //redirect to self
-app.get("/employees",function(req,res){}) //same as above
+app.get("/employee", function(req, res) {
+  if (req.cookies.userData) {
+    res.redirect("/employee/" + req.cookies.userData.id);
+  } else {
+    res.redirect("/login");
+  }
+}) //redirect to self
+app.get("/employees", function(req, res) {
+  if (req.cookies.userData) {
+    res.redirect("/employee/" + req.cookies.userData.id);
+  } else {
+    res.redirect("/login");
+  }
+}) //same as above
 
 
 

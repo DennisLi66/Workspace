@@ -46,3 +46,5 @@ Add employee management for owners and admins
 
 TODO:
 Finish Personal Announcements Page
+Finish Employees page - Pagination For Employees/Search By Name, Search By Title, Search By Heirarchy (can make the headers buttons)
+Finish Employee Page
