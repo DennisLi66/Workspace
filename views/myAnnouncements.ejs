@@ -1,6 +1,58 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
 
+<h2> Announcements </h2>
+<script>
+  var mysqlres = '<%- JSON.stringify(announcements) %>'
+</script>
+
+
+
+
+
+<input type="hidden" value='0' id='indexe'>
+<div id="contenee">
+
+  <% if (!announcements || announcements.length == 0){ %>
+  There are no announcements to show.
+  <% }else{ %>
+  <% for(let t = 0; t < Math.min(announcements.length,10); t++){ %>
+
+
+  <div class="row" style="width:100%">
+    <div class="card" style="text-align:center; background-color:tan; padding: 10px">
+      <div class="card-header">
+        <h4><%= announcements[t].title %></h4>
+        ID: <a href=<%="/announcement/" + announcements[t].id %> ><%= announcements[t].id %></a><br>
+        From: <%= announcements[t].firstName + ' ' + announcements[t].lastName %><br>
+        Date: <%= announcements[t].recency %>
+      </div>
+      <div class="card-body">
+        <p class="lead"> <%= announcements[t].content %></p>
+      </div>
+      <% if (announcements[t].power > 0){%>
+          <div class="card-footer">
+          <form action='' method="POST" style="text-align:right">
+            <input type="hidden" name="contract" value="delAnn">
+            <input type="hidden" name="aid" value="<%= announcements[t].id  %>">
+            <button type="submit" class="btn btn-danger">Delete Announcement</button>
+          </form>
+        </div>
+
+
+      <% } %>
+    </div>
+  </div>
+  <% } %>
+
+
+  <% } %>
+  <% if (announcements.length > 10){ %>
+  <button onclick="javascript:next10()"> Next 10 Announcements </button>
+  <% }  %>
+</div>
+
+
 
 
 <%- include('partials/footer') %>

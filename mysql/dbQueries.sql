@@ -38,3 +38,9 @@ select * from employeesInCompany left join company on company.companyID = employ
 -- FROM announcements left join users on users.userID = announcements.authorID
 -- left join employeesInCompany ON announcements.companyID = employeesInCompany.companyID
 -- WHERE employeesincompany.userID = ? AND id = ?;
+
+select * from employeesInCompany 
+left join company on company.companyID = employeesInCompany.companyID;
+
+select users.userID as userID, companyID, title, power, firstName, lastName, email from employeesInCompany
+left join users ON users.userID = employeesInCompany.userID

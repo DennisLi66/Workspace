@@ -42,3 +42,7 @@ Will Need Pagination - use client side js to display it
 Add announcements table
 
 Add employee management for owners and admins
+
+
+TODO:
+Finish Personal Announcements Page

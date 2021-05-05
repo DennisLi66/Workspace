@@ -189,7 +189,7 @@ app.get("/dashboard", function(req, res) {
     left join employeesInCompany ON announcements.companyID = employeesInCompany.companyID
     WHERE employeesInCompany.userID = ?  ORDER BY id DESC LIMIT 3
     `;
-    connection.query(sQuery, [req.cookies.userData.id,req.cookies.userData.id], function(error, results, fields) {
+    connection.query(sQuery, [req.cookies.userData.id, req.cookies.userData.id], function(error, results, fields) {
       if (error) {
         console.log(error);
         employedAt = null;
@@ -703,28 +703,28 @@ app.get("/logout", function(req, res) {
     res.redirect("/");
   }
 })
-
+/// ANNOUNCEMENTS
 app.get("/announcements", function(req, res) {
   if (req.cookies.userData) {
     var sQuery =
-    `
+      `
     SELECT id,authorID,announcements.companyID,announcements.title,content,recency,firstName,lastName, employeesincompany.userID, power
     FROM announcements left join users on users.userID = announcements.authorID
     left join employeesInCompany ON announcements.companyID = employeesInCompany.companyID
     WHERE users.userID = ? ORDER BY id DESC
     `;
-    connection.query(sQuery,[req.cookies.userData.id],function(error,results,fields){
-      if (error){
+    connection.query(sQuery, [req.cookies.userData.id], function(error, results, fields) {
+      if (error) {
         console.log(error);
         res.redirect("/dashboard");
-      }else if (results.length == 0){ //No Announcements to show
-        res.render('myAnnouncements',{
+      } else if (results.length == 0) { //No Announcements to show
+        res.render('myAnnouncements', {
           announcements: null,
           banner: "Workspace: Your Announcements",
           fName: req.cookies.userData.firstName
         });
-      }else{
-        res.render('myAnnouncements',{
+      } else {
+        res.render('myAnnouncements', {
           announcements: results,
           banner: "Workspace: Your Announcements",
           fName: req.cookies.userData.firstName
@@ -734,7 +734,7 @@ app.get("/announcements", function(req, res) {
   } else {
     res.redirect("/login");
   }
-})
+}) //FIX THIS: BUGGY
 app.route("/announcements/:cnumber")
   .get(function(req, res) {
     if (req.cookies.userData) {
@@ -851,35 +851,33 @@ app.route("/announcement/:aid")
     }
   })
   .post(function(req, res) {
-    if (req.cookies.userData){
+    if (req.cookies.userData) {
       var sQuery =
-      `
+        `
         SELECT id,authorID,announcements.companyID,announcements.title,content,recency,firstName,lastName, employeesincompany.userID, power
         FROM announcements left join users on users.userID = announcements.authorID
         left join employeesInCompany ON announcements.companyID = employeesInCompany.companyID
         WHERE employeesincompany.userID = ? AND id = ? AND (power = 1 or power = 2);
       `;
-      connection.query(sQuery,[req.cookies.userData.id,req.params.aid],function(er,re,fi){
-        if ( er || re.length == 0){
-          res.render('specificAnnouncement',{
+      connection.query(sQuery, [req.cookies.userData.id, req.params.aid], function(er, re, fi) {
+        if (er || re.length == 0) {
+          res.render('specificAnnouncement', {
             banner: 'Workspace: Announcement ID ' + req.params.aid,
             fName: req.cookies.userData.fName,
             result: null,
             truth: null
           })
-        }
-        else{
+        } else {
           var dQuery =
-          `
+            `
           DELETE FROM announcements WHERE id = ?;
           `;
-          connection.query(dQuery,[req.params.aid],function(error,results,fields){
-            if (error){
+          connection.query(dQuery, [req.params.aid], function(error, results, fields) {
+            if (error) {
               console.log(error);
               res.redirect("/announcement/" + req.params.aid);
-            }
-            else{
-              res.render('specificAnnouncement',{
+            } else {
+              res.render('specificAnnouncement', {
                 banner: 'Workspace: Announcement ID ' + req.params.aid,
                 fName: req.cookies.userData.fName,
                 result: null,
@@ -889,16 +887,68 @@ app.route("/announcement/:aid")
           })
         }
       })
-    }else{
+    } else {
       res.redirect("/login");
     }
   })
+//. Manage Employees
 app.route("/employees/:cnumber")
-  .get(function(req,res){})
-  .post(function(req,res){})
+  .get(function(req, res) {
+    if (req.cookies.userData) {
+      var sQuery =
+        `
+      select * from employeesInCompany
+      left join company on company.companyID = employeesInCompany.companyID
+      WHERE employeesInCompany.companyID = ? AND userID = ?;
+      select users.userID as userID, companyID, title, power, firstName, lastName, email from employeesInCompany
+      left join users ON users.userID = employeesInCompany.userID WHERE companyID = ?;
+      `
+      connection.query(sQuery, [req.params.cnumber,req.cookies.userData.id,req.params.cnumber], function(error, result, field) {
+        if (error) {
+          console.log(error);
+          res.redirect("/dashboard");
+        } else if (result[0].length == 0) {
+          res.render('employeeList', {
+            banner: 'Workspace: Employees of ',
+            fName: req.cookies.userData.firstName,
+            employees: null,
+            power: null,
+            companyName: null,
+            cid: req.params.cnumber
+          })
+        } else {
+          res.render('employeeList', {
+            banner: 'Workspace: Employees of ',
+            fName: req.cookies.userData.firstName,
+            employees: result[1],
+            power: result[0][0].power,
+            companyName: result[0][0].cName,
+            cid: req.params.cnumber
+          })
+        }
+      })
+    } else {
+      res.redirect("/login");
+    }
+  })
+  .post(function(req, res) {})
+app.get("/employee/:userid", function(req, res) {
+  //employee should only be possible to those with a shared company
+  if (req.cookies.userData) {
+    var sQuery =
+      `
+    `;
+  }
+})
+app.get("/employee",function(req,res){}) //redirect to self
+app.get("/employees",function(req,res){}) //same as above
 
 
-app.get("/profile/:userid", function(req, res) {})
+
+
+
+
+
 
 app.get("/messages", function(req, res) {})
 
