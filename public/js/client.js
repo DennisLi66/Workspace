@@ -115,7 +115,32 @@ function next10(power) {
   // increase index by 10 or remaining difference, whichever is smalelr
   //console.log(document.getElementById('indexe').value);
 }
+// Employee FUnctions
+function closeMenuBox() {
+  var l = document.getElementsByClassName("rows");
+  for (let y = 0; y < l.length; y++) {
+    document.getElementById(l[y].id).style.display = "none";
+  }
+}
 
+function openChangeTitleBox(emplID, compID, menuBoxID) {
+  closeMenuBox();
+  // console.log(emplID);
+  // console.log(compID);
+  // console.log(menuBoxID);
+  var lines = '<th scope="col">';
+  lines += '<br><form action="/employee/"' + emplID +' method="POST">';
+  // lines += '<input type="hidden" name="eid" value="' + emplID + '">';
+  lines += '<input type="hidden" name="cid" value="' + compID + '">';
+  lines += '<input type="hidden" name="contract" value="changeMyTitle">';
+  lines += '<label for="title"> Title: </label>   ';
+  lines += '<input type="text"   name="title"  required><br>';
+  lines += '<br><button type="submit" class="btn btn-dark">Submit</button>';
+  lines += '</form><br>';
+  lines += '</th>';
+  document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
+  document.getElementById('row' + menuBoxID).style.display = "";
+}
 
 // <script>
 //   $(window).scroll(function() {

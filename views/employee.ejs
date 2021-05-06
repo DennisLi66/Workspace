@@ -41,9 +41,23 @@
       <th scope="col"> <%= data[x].cName %> </th>
       <th scope="col"> <%= data[x].title %> </th>
       <th scope="col"> <%= data[x].power %> </th>
-      <th scope="col"> </th>
-      <th scope="col"> </th>
-      <th scope="col"> </th>
+      <th scope="col">
+        <% if (data[x].power > 0){ %>
+        <a href='javascript:openChangeTitleBox(<%= data[x].userID %>,<%=data[x].companyID %>,<%= x %>)' > Change Title? </a>
+        <% } else {%>
+        Not Available to Regular Employees.
+        <% } %>
+      </th>
+      <th scope="col"> Leave Company? </th>
+      <th scope="col"> Destroy Company? </th>
+    </tr>
+    <tr>
+<th class='rows' id='<%= 'row' + x %>' style='display:none'>
+    <div class='menuBox' id='<%= "menuBox" + x %>'>
+
+
+    </div>
+  </th>
     </tr>
     <% } %>
   </tbody>

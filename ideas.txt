@@ -15,6 +15,8 @@ Company Dashboard features
   -- create join link
   -- owners can create admins
 
+DIRECT DMING
+
 Have redirects that require logging in to redirect to login as opposed to the homepage
 
 Owners:
