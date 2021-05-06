@@ -504,7 +504,8 @@ app.route("/dashboard/company/:cnumber/createjoin")
               cName: results[0].cName,
               errorMsg: null,
               posiMsg: null,
-              joinCode: null
+              joinCode: null,
+              cid: req.params.cnumber
             })
           } else {
             res.redirect("/dashboard/company/" + req.params.cnumber);
@@ -550,7 +551,8 @@ app.route("/dashboard/company/:cnumber/createjoin")
                   cName: req.body.cName,
                   errorMsg: error,
                   posiMsg: null,
-                  joinCode: null
+                  joinCode: null,
+                  cid: req.params.cnumber
                 })
               } else {
                 res.render('createjoinlink', {
@@ -561,7 +563,8 @@ app.route("/dashboard/company/:cnumber/createjoin")
                   cName: req.body.cName,
                   errorMsg: null,
                   posiMsg: 'Your link has been created! Tell your employees to use the code below on joining a company.',
-                  joinCode: rando
+                  joinCode: rando,
+                  cid: req.params.cnumber
                 })
               }
             })
@@ -984,8 +987,8 @@ app.get("/employee/:userid", function(req, res) {
       left join users ON eic.userID = users.userID
       WHERE employeesInCompany.userID = ? AND eic.userID = ?;
       `;
-      connection.query(sQuery,[req.cookies.userData.id,req.params.userid],function(error,results,fields){
-        if (error){
+      connection.query(sQuery, [req.cookies.userData.id, req.params.userid], function(error, results, fields) {
+        if (error) {
           res.render('employee', {
             banner: 'Workspace: Employee',
             fName: req.cookies.userData.fName,
@@ -994,20 +997,20 @@ app.get("/employee/:userid", function(req, res) {
             profile: null,
             self: null
           })
-        }else if (results.length == 0){
+        } else if (results.length == 0) {
           res.render('employee', {
             banner: 'Workspace: Employee',
             fName: req.cookies.userData.fName,
             errorMsg: "You either are not in a company with this user, or they do not exist.",
             self: null
           })
-        }else{
+        } else {
           res.render('employee', {
             banner: 'Workspace: Employee',
             fName: req.cookies.userData.fName,
             errorMsg: null,
             self: null,
-            data:results
+            data: results
           })
         }
       })

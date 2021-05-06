@@ -1,5 +1,6 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
+<%- include('partials/returnCompany')%>
 <% if (errorMsg){ %>
 <%= errorMsg %>
 <% } %>
@@ -7,7 +8,8 @@
 <%= posiMsg %>
 <% } %>
 
-<%= cName %>
+
+<h2> Join Links For <%= cName %></h2>
 
 <form action='<%= '/dashboard/company/' + cid + "/createjoin" %>' method='POST'>
   <input type='hidden' id='cName' value=<%= cName %> >
