@@ -31,31 +31,66 @@
     <th scope="col"> Title </th>
     <th scope="col"> Site Hierarchy </th>
     <th scope="col"> Change Title </th>
-    <th scope="col"> Change Hierarchy </th>
-    <th scope="col"> Change Ownership </th>
     <th scope="col"> Leave Company </th>
     <th scope="col"> Destroy Company </th>
-    </thead>
-    <tbody>
-      <% for(let x = 0; x < data.length; x++){%>
-        <tr>
-          <th scope="col"> <%= data[x].companyID  %> </th>
-          <th scope="col"> <%= data[x].cName %> </th>
-          <th scope="col"> <%= data[x].title %> </th>
-          <th scope="col"> <%= data[x].power %> </th>
-          <th scope="col">  </th>
-          <th scope="col">  </th>
-          <th scope="col">  </th>
-          <th scope="col">  </th>
-          <th scope="col">  </th>
-          </tr>
-      <% } %>
-      </tbody>
+  </thead>
+  <tbody>
+    <% for(let x = 0; x < data.length; x++){%>
+    <tr>
+      <th scope="col"> <%= data[x].companyID  %> </th>
+      <th scope="col"> <%= data[x].cName %> </th>
+      <th scope="col"> <%= data[x].title %> </th>
+      <th scope="col"> <%= data[x].power %> </th>
+      <th scope="col"> </th>
+      <th scope="col"> </th>
+      <th scope="col"> </th>
+    </tr>
+    <% } %>
+  </tbody>
 </table>
 <% } else { %>
 There are no companies assoicated with this profile.
 <% }%>
 
+<% } else if (!self){ %>
+<h2> <%= data[0].firstName + '  '+ data[0].lastName %>'s Profile </h2>
+<h3> User Information </h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col"> Company ID </th>
+      <th scope="col"> Company Name </th>
+      <th scope="col"> Title </th>
+      <th scope="col"> Site Hierarchy </th>
+      <th scope="col"> Change Title </th>
+      <th scope="col"> Change Hierarchy </th>
+      <th scope="col"> Confer Ownership </th>
+      <th scope="col"> Remove from Company </th>
+    </tr>
+  </thead>
+  <tbody>
+    <% for (let g = 0; g < data.length; g++){ %>
+    <tr>
+      <th scope="col"> <%= data[g].companyID %> </th>
+      <th scope="col"> <%= data[g].cName %> </th>
+      <th scope='col'> <%= data[g].eTitle %> </th>
+      <th scope='col'>
+        <%if (data[g].ePower == 0){ %>
+        Employee
+        <% } else if (data[g].ePower == 1){ %>
+        Admin
+        <% }else{ %>
+        Owner
+        <% } %>
+      </th>
+      <th scope='col'> Change Title </th>
+      <th scope='col'> Change Hierarchy </th>
+      <th scope='col'> Confer Ownership </th>
+      <th scope='col'> Remove From Company </th>
+    </tr>
+    <% } %>
 
+  </tbody>
+</table>
 <% } %>
 <%- include('partials/footer') %>

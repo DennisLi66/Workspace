@@ -984,6 +984,33 @@ app.get("/employee/:userid", function(req, res) {
       left join users ON eic.userID = users.userID
       WHERE employeesInCompany.userID = ? AND eic.userID = ?;
       `;
+      connection.query(sQuery,[req.cookies.userData.id,req.params.userid],function(error,results,fields){
+        if (error){
+          res.render('employee', {
+            banner: 'Workspace: Employee',
+            fName: req.cookies.userData.fName,
+            errorMsg: error,
+            data: null,
+            profile: null,
+            self: null
+          })
+        }else if (results.length == 0){
+          res.render('employee', {
+            banner: 'Workspace: Employee',
+            fName: req.cookies.userData.fName,
+            errorMsg: "You either are not in a company with this user, or they do not exist.",
+            self: null
+          })
+        }else{
+          res.render('employee', {
+            banner: 'Workspace: Employee',
+            fName: req.cookies.userData.fName,
+            errorMsg: null,
+            self: null,
+            data:results
+          })
+        }
+      })
     }
 
   } else {

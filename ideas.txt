@@ -43,6 +43,7 @@ Add announcements table
 
 Add employee management for owners and admins
 
+Set Employee Profiles to public or private if they want to
 
 TODO:
 Finish Personal Announcements Page
