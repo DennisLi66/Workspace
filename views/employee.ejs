@@ -40,10 +40,18 @@
       <th scope="col"> <%= data[x].companyID  %> </th>
       <th scope="col"> <%= data[x].cName %> </th>
       <th scope="col"> <%= data[x].title %> </th>
-      <th scope="col"> <%= data[x].power %> </th>
+      <th scope="col">
+        <% if (data[x].power == 0){ %>
+        Employee
+        <% } else if (data[x].power == 1){ %>
+        Admin
+        <% } else if (data[x].power == 2) {  %>
+        Owner
+        <% } %>
+      </th>
       <th scope="col">
         <% if (data[x].power > 0){ %>
-        <a href='javascript:openChangeTitleBox(<%= data[x].userID %>,<%=data[x].companyID %>,<%= x %>)' > Change Title? </a>
+        <a href='javascript:openChangeTitleBox(<%= data[x].userID %>,<%=data[x].companyID %>,<%= x %>)'> Change Title? </a>
         <% } else {%>
         Not Available to Regular Employees.
         <% } %>
@@ -52,12 +60,12 @@
       <th scope="col"> Destroy Company? </th>
     </tr>
     <tr>
-<th class='rows' id='<%= 'row' + x %>' style='display:none'>
-    <div class='menuBox' id='<%= "menuBox" + x %>'>
+      <th class='rows' id='<%= 'row' + x %>' style='display:none'>
+        <div class='menuBox' id='<%= "menuBox" + x %>'>
 
 
-    </div>
-  </th>
+        </div>
+      </th>
     </tr>
     <% } %>
   </tbody>

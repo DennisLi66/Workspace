@@ -943,7 +943,8 @@ app.route("/employees/:cnumber")
     }
   })
   .post(function(req, res) {})
-app.get("/employee/:userid", function(req, res) {
+app.route("/employee/:userid")
+  .get(function(req, res) {
   //employee should only be possible to those with a shared company
   if (req.cookies.userData) {
     if (req.cookies.userData.id == req.params.userid) {
@@ -1020,6 +1021,44 @@ app.get("/employee/:userid", function(req, res) {
     res.redirect("/login")
   }
 })
+  .post(function(req,res){
+    if (req.cookies.userData){
+      var sQuery =
+      `
+      SELECT * FROM employeesInCompany WHERE power > 0 AND userID = ? AND companyID = ?;
+      `;
+      connection.query(sQuery,[req.cookies.userData.id,req.body.cid],function(errr,reslts,filds){
+        if (errr){
+          console.log(error);
+          res.redirect("back");
+        }else if (reslts.length == 0){
+          console.log("Not Authorized.");
+          res.redirect("back");
+        }else{
+          if (req.body.contract === "changeMyTitle"){
+            var uQuery =
+            `
+            UPDATE employeesInCompany
+            SET title = ?
+            WHERE companyID = ? AND userID = ?;
+            `;
+            connection.query(uQuery,[req.body.title,req.body.cid,req.params.userid],function(error,results,fields){
+              if (error){
+                console.log(error);
+              }
+              res.redirect("back");
+            })
+          }
+          else{
+            console.log("Non-Valid Contract");
+            res.redirect("back");
+          }
+        }
+      })
+    }else{
+      res.redirect("/login")
+    }
+  })
 app.get("/employee", function(req, res) {
   if (req.cookies.userData) {
     res.redirect("/employee/" + req.cookies.userData.id);
