@@ -39,8 +39,22 @@ select * from employeesInCompany left join company on company.companyID = employ
 -- left join employeesInCompany ON announcements.companyID = employeesInCompany.companyID
 -- WHERE employeesincompany.userID = ? AND id = ?;
 
-select * from employeesInCompany 
-left join company on company.companyID = employeesInCompany.companyID;
+-- select * from employeesInCompany 
+-- left join company on company.companyID = employeesInCompany.companyID;
 
-select users.userID as userID, companyID, title, power, firstName, lastName, email from employeesInCompany
-left join users ON users.userID = employeesInCompany.userID
+-- select users.userID as userID, companyID, title, power, firstName, lastName, email from employeesInCompany
+-- left join users ON users.userID = employeesInCompany.userID
+
+
+-- SELECT * from  employeesInCompany
+-- left join company
+-- On company.companyID = employeesInCompany.companyID
+
+
+
+SELECT eic.companyID as companyID,cName as cName, employeesInCompany.userID as myID, employeesInCompany.power as myPower ,
+firstName,lastName,email,eic.power as ePower, eic.title as eTitle, eic.userID as eID  FROM employeesInCompany
+LEFT JOIN employeesInCompany as eic
+ON eic.companyID = employeesInCompany.companyID
+LEFT JOIN company ON company.companyID = employeesInCompany.companyID
+left join users ON eic.userID = users.userID

@@ -22,9 +22,7 @@ var connection = mysql.createConnection({
   database: process.env.DATABASE,
   multipleStatements: true
 })
-connection.connect(); //FIX THIS: write dotenv file
-
-
+connection.connect();
 
 //Not Logged in
 app.get("/", function(req, res) {
@@ -945,14 +943,51 @@ app.route("/employees/:cnumber")
 app.get("/employee/:userid", function(req, res) {
   //employee should only be possible to those with a shared company
   if (req.cookies.userData) {
-    var meQuery =
+    if (req.cookies.userData.id == req.params.userid) {
+      var meQuery =
+        `
+        SELECT * FROM users WHERE userID = ?;
+        SELECT * from  employeesInCompany
+        left join company
+        On company.companyID = employeesInCompany.companyID
+        WHERE userID = ?;
       `
-    Get All Companies
-    `
-    var sQuery =
-      `
-    Compare Companies between self and employee
-    `;
+      connection.query(meQuery, [req.cookies.userData.id, req.cookies.userData.id], function(error, results, fields) {
+        if (error) {
+          res.render('employee', {
+            banner: 'Workspace: Employee',
+            fName: req.cookies.userData.fName,
+            errorMsg: error,
+            data: null,
+            profile: null,
+            self: null
+          })
+        } else {
+          res.render('employee', {
+            banner: 'Workspace: Employee',
+            fName: req.cookies.userData.fName,
+            errorMsg: null,
+            data: results[1],
+            profile: results[0],
+            self: true
+          })
+        }
+      })
+    } else {
+      var sQuery =
+        `
+      SELECT eic.companyID as companyID,cName as cName, employeesInCompany.userID as myID, employeesInCompany.power as myPower ,
+      firstName,lastName,email,eic.power as ePower, eic.title as eTitle, eic.userID as eID  FROM employeesInCompany
+      LEFT JOIN employeesInCompany as eic
+      ON eic.companyID = employeesInCompany.companyID
+      LEFT JOIN company ON company.companyID = employeesInCompany.companyID
+      left join users ON eic.userID = users.userID
+      WHERE employeesInCompany.userID = ? AND eic.userID = ?;
+      `;
+    }
+
+  } else {
+    res.redirect("/login")
   }
 })
 app.get("/employee", function(req, res) {

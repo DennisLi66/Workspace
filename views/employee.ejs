@@ -1,4 +1,61 @@
 <%- include('partials/header') %>
 <%- include('partials/navbar') %>
 
+<% if (errorMsg){ %>
+<%= errorMsg %>
+<% }else if (self){ %>
+<h2> <%= profile[0].firstName + ' ' + profile[0].lastName %>'s Profile </h2>
+<h3> User Information </h3>
+<table class="table">
+  <thead>
+    <tr>
+      <th scope="col"> User ID </th>
+      <th scope="col"> Name </th>
+      <th scope='col'> Email </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="col"> <%= profile[0].userID %> </th>
+      <th scope="col"> <%= profile[0].firstName + ' ' + profile[0].lastName %> </th>
+      <th scope='col'> <%= profile[0].email %> </th>
+    </tr>
+  </tbody>
+</table>
+<h3> Associated Companies </h3>
+<% if (data.length > 0){%>
+<table class="table">
+  <thead>
+    <th scope="col"> Company ID </th>
+    <th scope="col"> Company Name </th>
+    <th scope="col"> Title </th>
+    <th scope="col"> Site Hierarchy </th>
+    <th scope="col"> Change Title </th>
+    <th scope="col"> Change Hierarchy </th>
+    <th scope="col"> Change Ownership </th>
+    <th scope="col"> Leave Company </th>
+    <th scope="col"> Destroy Company </th>
+    </thead>
+    <tbody>
+      <% for(let x = 0; x < data.length; x++){%>
+        <tr>
+          <th scope="col"> <%= data[x].companyID  %> </th>
+          <th scope="col"> <%= data[x].cName %> </th>
+          <th scope="col"> <%= data[x].title %> </th>
+          <th scope="col"> <%= data[x].power %> </th>
+          <th scope="col">  </th>
+          <th scope="col">  </th>
+          <th scope="col">  </th>
+          <th scope="col">  </th>
+          <th scope="col">  </th>
+          </tr>
+      <% } %>
+      </tbody>
+</table>
+<% } else { %>
+There are no companies assoicated with this profile.
+<% }%>
+
+
+<% } %>
 <%- include('partials/footer') %>
