@@ -62,8 +62,6 @@
     <tr>
       <th class='rows' id='<%= 'row' + x %>' style='display:none'>
         <div class='menuBox' id='<%= "menuBox" + x %>'>
-
-
         </div>
       </th>
     </tr>
@@ -105,10 +103,22 @@ There are no companies assoicated with this profile.
         Owner
         <% } %>
       </th>
-      <th scope='col'> Change Title </th>
+      <th scope='col'>
+        <% if (data[g].myPower > 0){ %>
+        <a href='javascript:openChangeTitleBox(<%= data[g].eID %>,<%=data[g].companyID %>,<%= g %>)'> Change Title? </a>
+        <% } else {%>
+        Not Available to Regular Employees.
+        <% } %>
+      </th>
       <th scope='col'> Change Hierarchy </th>
       <th scope='col'> Confer Ownership </th>
       <th scope='col'> Remove From Company </th>
+    </tr>
+    <tr>
+      <th class='rows' id='<%= 'row' + g %>' style='display:none'>
+        <div class='menuBox' id='<%= "menuBox" + g %>'>
+        </div>
+      </th>
     </tr>
     <% } %>
 

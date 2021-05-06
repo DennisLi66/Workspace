@@ -129,7 +129,7 @@ function openChangeTitleBox(emplID, compID, menuBoxID) {
   // console.log(compID);
   // console.log(menuBoxID);
   var lines = '<th scope="col">';
-  lines += '<br><form action="/employee/' + emplID +'" method="POST">';
+  lines += '<br><form action="/employee/' + emplID + '" method="POST">';
   // lines += '<input type="hidden" name="eid" value="' + emplID + '">';
   lines += '<input type="hidden" name="cid" value="' + compID + '">';
   lines += '<input type="hidden" name="contract" value="changeMyTitle">';

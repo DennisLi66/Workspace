@@ -945,41 +945,41 @@ app.route("/employees/:cnumber")
   .post(function(req, res) {})
 app.route("/employee/:userid")
   .get(function(req, res) {
-  //employee should only be possible to those with a shared company
-  if (req.cookies.userData) {
-    if (req.cookies.userData.id == req.params.userid) {
-      var meQuery =
-        `
+    //employee should only be possible to those with a shared company
+    if (req.cookies.userData) {
+      if (req.cookies.userData.id == req.params.userid) {
+        var meQuery =
+          `
         SELECT * FROM users WHERE userID = ?;
         SELECT * from  employeesInCompany
         left join company
         On company.companyID = employeesInCompany.companyID
         WHERE userID = ?;
       `
-      connection.query(meQuery, [req.cookies.userData.id, req.cookies.userData.id], function(error, results, fields) {
-        if (error) {
-          res.render('employee', {
-            banner: 'Workspace: Employee',
-            fName: req.cookies.userData.fName,
-            errorMsg: error,
-            data: null,
-            profile: null,
-            self: null
-          })
-        } else {
-          res.render('employee', {
-            banner: 'Workspace: Employee',
-            fName: req.cookies.userData.fName,
-            errorMsg: null,
-            data: results[1],
-            profile: results[0],
-            self: true
-          })
-        }
-      })
-    } else {
-      var sQuery =
-        `
+        connection.query(meQuery, [req.cookies.userData.id, req.cookies.userData.id], function(error, results, fields) {
+          if (error) {
+            res.render('employee', {
+              banner: 'Workspace: Employee',
+              fName: req.cookies.userData.fName,
+              errorMsg: error,
+              data: null,
+              profile: null,
+              self: null
+            })
+          } else {
+            res.render('employee', {
+              banner: 'Workspace: Employee',
+              fName: req.cookies.userData.fName,
+              errorMsg: null,
+              data: results[1],
+              profile: results[0],
+              self: true
+            })
+          }
+        })
+      } else {
+        var sQuery =
+          `
       SELECT eic.companyID as companyID,cName as cName, employeesInCompany.userID as myID, employeesInCompany.power as myPower ,
       firstName,lastName,email,eic.power as ePower, eic.title as eTitle, eic.userID as eID  FROM employeesInCompany
       LEFT JOIN employeesInCompany as eic
@@ -988,74 +988,73 @@ app.route("/employee/:userid")
       left join users ON eic.userID = users.userID
       WHERE employeesInCompany.userID = ? AND eic.userID = ?;
       `;
-      connection.query(sQuery, [req.cookies.userData.id, req.params.userid], function(error, results, fields) {
-        if (error) {
-          res.render('employee', {
-            banner: 'Workspace: Employee',
-            fName: req.cookies.userData.fName,
-            errorMsg: error,
-            data: null,
-            profile: null,
-            self: null
-          })
-        } else if (results.length == 0) {
-          res.render('employee', {
-            banner: 'Workspace: Employee',
-            fName: req.cookies.userData.fName,
-            errorMsg: "You either are not in a company with this user, or they do not exist.",
-            self: null
-          })
-        } else {
-          res.render('employee', {
-            banner: 'Workspace: Employee',
-            fName: req.cookies.userData.fName,
-            errorMsg: null,
-            self: null,
-            data: results
-          })
-        }
-      })
-    }
+        connection.query(sQuery, [req.cookies.userData.id, req.params.userid], function(error, results, fields) {
+          if (error) {
+            res.render('employee', {
+              banner: 'Workspace: Employee',
+              fName: req.cookies.userData.fName,
+              errorMsg: error,
+              data: null,
+              profile: null,
+              self: null
+            })
+          } else if (results.length == 0) {
+            res.render('employee', {
+              banner: 'Workspace: Employee',
+              fName: req.cookies.userData.fName,
+              errorMsg: "You either are not in a company with this user, or they do not exist.",
+              self: null
+            })
+          } else {
+            res.render('employee', {
+              banner: 'Workspace: Employee',
+              fName: req.cookies.userData.fName,
+              errorMsg: null,
+              self: null,
+              data: results
+            })
+          }
+        })
+      }
 
-  } else {
-    res.redirect("/login")
-  }
-})
-  .post(function(req,res){
-    if (req.cookies.userData){
+    } else {
+      res.redirect("/login")
+    }
+  })
+  .post(function(req, res) {
+    if (req.cookies.userData) {
       var sQuery =
-      `
+        `
       SELECT * FROM employeesInCompany WHERE power > 0 AND userID = ? AND companyID = ?;
       `;
-      connection.query(sQuery,[req.cookies.userData.id,req.body.cid],function(errr,reslts,filds){
-        if (errr){
+      connection.query(sQuery, [req.cookies.userData.id, req.body.cid], function(errr, reslts, filds) {
+        if (errr) {
           console.log(error);
           res.redirect("back");
-        }else if (reslts.length == 0){
+        } else if (reslts.length == 0) {
           console.log("Not Authorized.");
           res.redirect("back");
-        }else{
-          if (req.body.contract === "changeMyTitle"){
+        } else {
+          if (req.body.contract === "changeMyTitle") {
             var uQuery =
-            `
+              `
             UPDATE employeesInCompany
             SET title = ?
             WHERE companyID = ? AND userID = ?;
             `;
-            connection.query(uQuery,[req.body.title,req.body.cid,req.params.userid],function(error,results,fields){
-              if (error){
+            connection.query(uQuery, [req.body.title, req.body.cid, req.params.userid], function(error, results, fields) {
+              if (error) {
                 console.log(error);
               }
               res.redirect("back");
             })
-          }
-          else{
+          } else {
             console.log("Non-Valid Contract");
             res.redirect("back");
           }
         }
       })
-    }else{
+    } else {
       res.redirect("/login")
     }
   })
