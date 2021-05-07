@@ -107,18 +107,25 @@ There are no companies assoicated with this profile.
         <% if (data[g].myPower > 0){ %>
         <a href='javascript:openChangeTitleBox(<%= data[g].eID %>,<%=data[g].companyID %>,<%= g %>)'> Change Title? </a>
         <% } else {%>
-        Not Available to Regular Employees.
+        Not Available <br> to Regular Employees.
         <% } %>
       </th>
       <th scope='col'>
         <% if (data[g].myPower > 1){ %>
-          <a href='javascript:openChangeHierarchyBox(<%= data[g].eID %>,<%=data[g].companyID %>,<%= data[g].ePower %>,<%= g %>)'> Change Hierarchy? </a>
+        <a href='javascript:openChangeHierarchyBox(<%= data[g].eID %>,<%=data[g].companyID %>,<%= data[g].ePower %>,<%= g %>)'> Change Hierarchy? </a>
         <% } else {%>
         Not Available to Regular Employees.
         <% } %>
       </th>
       <th scope='col'> Confer Ownership </th>
-      <th scope='col'> Remove From Company </th>
+      <th scope='col'>
+        <% if(  (data[g].myPower > 1 && data[g].ePower == 0)   || (data[g].myPower == 2)){  %>
+          <a href='javascript:openRemoveFromCompanyBox(<%= data[g].eID %>,<%=data[g].companyID %>,<%= g %>)'> Remove From Company? </a>
+
+        <%} else { %>
+        Not Available <br> to your Hierarchy
+        <% } %>
+      </th>
     </tr>
     <tr>
       <th class='rows' id='<%= 'row' + g %>' style='display:none'>

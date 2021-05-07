@@ -163,8 +163,18 @@ function openChangeOwnerBox() {
 
 }
 
-function openRemoveFromCompanyBox() {
-
+function openRemoveFromCompanyBox(emplID,compID,menuBoxID) {
+  closeMenuBox();
+  var lines = '<th scope="col">';
+  lines += '<br><form action="/employee/' + emplID + '" method="POST">';
+  lines += '<input type="hidden" name="cid" value="' + compID + '">';
+  lines += '<input type="hidden" name="contract" value="removeEmployee">';
+  lines += 'Are you want to remove this employee? They will be unable to rejoin without using another link.';
+  lines += '<br><button type="submit" class="btn btn-dark">Submit</button>';
+  lines += '</form><br>';
+  lines += '</th>';
+  document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
+  document.getElementById('row' + menuBoxID).style.display = "";
 }
 // <script>
 //   $(window).scroll(function() {
