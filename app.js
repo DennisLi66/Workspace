@@ -1048,6 +1048,26 @@ app.route("/employee/:userid")
               }
               res.redirect("back");
             })
+          } else if (req.body.contract === "changeHierarchy"){
+            //power == 2 and cammt be self
+            if (reslts[0].power != 2 || req.cookies.userData.id == req.params.userid){
+              console.log("Invalid Option");
+              res.redirect("back");
+            } else{
+              var setPower = (req.body.ePower == 1 ? 0 : 1);
+              var uQuery =
+              `
+              Update employeesInCompany
+              set power = ?
+              WHERE companyID = ? AND userID = ?
+              `
+              connection.query(uQuery,[setPower,req.body.cid,req.params.userid],function(error,results,fields){
+                if (error) {
+                  console.log(error);
+                }
+                res.redirect("back");
+              })
+            }
           } else {
             console.log("Non-Valid Contract");
             res.redirect("back");

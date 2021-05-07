@@ -125,9 +125,6 @@ function closeMenuBox() {
 
 function openChangeTitleBox(emplID, compID, menuBoxID) {
   closeMenuBox();
-  // console.log(emplID);
-  // console.log(compID);
-  // console.log(menuBoxID);
   var lines = '<th scope="col">';
   lines += '<br><form action="/employee/' + emplID + '" method="POST">';
   // lines += '<input type="hidden" name="eid" value="' + emplID + '">';
@@ -142,6 +139,33 @@ function openChangeTitleBox(emplID, compID, menuBoxID) {
   document.getElementById('row' + menuBoxID).style.display = "";
 }
 
+function openChangeHierarchyBox(emplID, compID, ePower, menuBoxID) {
+  closeMenuBox();
+  var lines = '<th scope="col">';
+  lines += '<br><form action="/employee/' + emplID + '" method="POST">';
+  lines += '<input type="hidden" name="cid" value="' + compID + '">';
+  lines += '<input type="hidden" name="ePower" value="' + ePower + '">';
+  lines += '<input type="hidden" name="contract" value="changeHierarchy">';
+  if (ePower == 1){
+    lines += "This will turn this user into a regular employee.<br>"
+  }else{
+    lines += "This will turn this user into an admin.<br>"
+  }
+  lines += 'Are You Sure?';
+  lines += '<br><button type="submit" class="btn btn-dark">Submit</button>';
+  lines += '</form><br>';
+  lines += '</th>';
+  document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
+  document.getElementById('row' + menuBoxID).style.display = "";
+}
+
+function openChangeOwnerBox() {
+
+}
+
+function openRemoveFromCompanyBox() {
+
+}
 // <script>
 //   $(window).scroll(function() {
 //     if($(window).scrollTop() + $(window).height() == $(document).height()) {

@@ -110,7 +110,13 @@ There are no companies assoicated with this profile.
         Not Available to Regular Employees.
         <% } %>
       </th>
-      <th scope='col'> Change Hierarchy </th>
+      <th scope='col'>
+        <% if (data[g].myPower > 1){ %>
+          <a href='javascript:openChangeHierarchyBox(<%= data[g].eID %>,<%=data[g].companyID %>,<%= data[g].ePower %>,<%= g %>)'> Change Hierarchy? </a>
+        <% } else {%>
+        Not Available to Regular Employees.
+        <% } %>
+      </th>
       <th scope='col'> Confer Ownership </th>
       <th scope='col'> Remove From Company </th>
     </tr>
