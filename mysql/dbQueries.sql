@@ -52,9 +52,17 @@ select * from employeesInCompany left join company on company.companyID = employ
 
 
 
-SELECT eic.companyID as companyID,cName as cName, employeesInCompany.userID as myID, employeesInCompany.power as myPower ,
-firstName,lastName,email,eic.power as ePower, eic.title as eTitle, eic.userID as eID  FROM employeesInCompany
-LEFT JOIN employeesInCompany as eic
-ON eic.companyID = employeesInCompany.companyID
-LEFT JOIN company ON company.companyID = employeesInCompany.companyID
-left join users ON eic.userID = users.userID
+-- SELECT eic.companyID as companyID,cName as cName, employeesInCompany.userID as myID, employeesInCompany.power as myPower ,
+-- firstName,lastName,email,eic.power as ePower, eic.title as eTitle, eic.userID as eID  FROM employeesInCompany
+-- LEFT JOIN employeesInCompany as eic
+-- ON eic.companyID = employeesInCompany.companyID
+-- LEFT JOIN company ON company.companyID = employeesInCompany.companyID
+-- left join users ON eic.userID = users.userID
+
+
+
+-- Confirm that the person im trying to remove has less power than me
+SELECT * FROM employeesInCompany 
+left join employeesInCOmpany as eic
+ON employeesInCompany.companyID = eic.companyID
+WHERE employeesInCompany.power > eic.power
