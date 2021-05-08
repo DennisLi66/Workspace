@@ -1023,91 +1023,98 @@ app.route("/employee/:userid")
   })
   .post(function(req, res) {
     if (req.cookies.userData) {
-      var sQuery =
-        `
+
+      if (req.body.contract === "leaveCompany") {
+
+      } else {
+        var sQuery =
+          `
       SELECT * FROM employeesInCompany WHERE power > 0 AND userID = ? AND companyID = ?;
       `;
-      connection.query(sQuery, [req.cookies.userData.id, req.body.cid], function(errr, reslts, filds) {
-        if (errr) {
-          console.log(error);
-          res.redirect("back");
-        } else if (reslts.length == 0) {
-          console.log("Not Authorized.");
-          res.redirect("back");
-        } else {
-          if (req.body.contract === "changeMyTitle") {
-            var uQuery =
-              `
+        connection.query(sQuery, [req.cookies.userData.id, req.body.cid], function(errr, reslts, filds) {
+          if (errr) {
+            console.log(error);
+            res.redirect("back");
+          } else if (reslts.length == 0) {
+            console.log("Not Authorized.");
+            res.redirect("back");
+          } else {
+            if (req.body.contract === "changeMyTitle") {
+              var uQuery =
+                `
             UPDATE employeesInCompany
             SET title = ?
             WHERE companyID = ? AND userID = ?;
             `;
-            connection.query(uQuery, [req.body.title, req.body.cid, req.params.userid], function(error, results, fields) {
-              if (error) {
-                console.log(error);
-              }
-              res.redirect("back");
-            })
-          } else if (req.body.contract === "changeHierarchy") {
-            //power == 2 and cammt be self
-            if (reslts[0].power != 2 || req.cookies.userData.id == req.params.userid) {
-              console.log("Invalid Option");
-              res.redirect("back");
-            } else {
-              var setPower = (req.body.ePower == 1 ? 0 : 1);
-              var uQuery =
-                `
-              Update employeesInCompany
-              set power = ?
-              WHERE companyID = ? AND userID = ?
-              `
-              connection.query(uQuery, [setPower, req.body.cid, req.params.userid], function(error, results, fields) {
+              connection.query(uQuery, [req.body.title, req.body.cid, req.params.userid], function(error, results, fields) {
                 if (error) {
                   console.log(error);
                 }
                 res.redirect("back");
               })
-            }
-          } else if (req.body.contract === "removeEmployee") {
-            // Need to do a query to make sure that the other person is lower in status
-            var sQuery1 =
-            `
+            } else if (req.body.contract === "changeHierarchy") {
+              //power == 2 and cammt be self
+              if (reslts[0].power != 2 || req.cookies.userData.id == req.params.userid) {
+                console.log("Invalid Option");
+                res.redirect("back");
+              } else {
+                var setPower = (req.body.ePower == 1 ? 0 : 1);
+                var uQuery =
+                  `
+              Update employeesInCompany
+              set power = ?
+              WHERE companyID = ? AND userID = ?
+              `
+                connection.query(uQuery, [setPower, req.body.cid, req.params.userid], function(error, results, fields) {
+                  if (error) {
+                    console.log(error);
+                  }
+                  res.redirect("back");
+                })
+              }
+            } else if (req.body.contract === "removeEmployee") {
+              // Need to do a query to make sure that the other person is lower in status
+              var sQuery1 =
+                `
             SELECT * FROM employeesInCompany
             left join employeesInCOmpany as eic
             ON employeesInCompany.companyID = eic.companyID
             WHERE employeesInCompany.power > eic.power
             AND employeesInCompany.userID = ? AND eic.userID = ? AND eic.companyID = ?
             `
-            connection.query(sQuery1,[req.cookies.userData.id,req.params.userid,req.body.cid],function(er,re,fd){
-              if (er){
-                console.log(er);
-                res.redirect("back");
-              } else if (re.length == 0){
-                console.log("Non-Valid Permissions");
-                res.redirect("back");
-              }else{
-                var dQuery =
-                `
+              connection.query(sQuery1, [req.cookies.userData.id, req.params.userid, req.body.cid], function(er, re, fd) {
+                if (er) {
+                  console.log(er);
+                  res.redirect("back");
+                } else if (re.length == 0) {
+                  console.log("Non-Valid Permissions");
+                  res.redirect("back");
+                } else {
+                  var dQuery =
+                    `
                 DELETE FROM employeesInCompany
                 WHERE companyID = ? AND userID = ?;
                 `;
-                connection.query(dQuery,[req.body.cid,req.params.userid],function(error,results,fields){
-                  if (error){
-                    console.log(error);
-                    res.redirect("back");
-                  }
-                  else{
-                    res.redirect("/employees/" + req.body.cid);
-                  }
-                })
-              }
-            })
-          } else {
-            console.log("Non-Valid Contract");
-            res.redirect("back");
+                  connection.query(dQuery, [req.body.cid, req.params.userid], function(error, results, fields) {
+                    if (error) {
+                      console.log(error);
+                      res.redirect("back");
+                    } else {
+                      res.redirect("/employees/" + req.body.cid);
+                    }
+                  })
+                }
+              })
+            } else {
+              console.log("Non-Valid Contract");
+              res.redirect("back");
+            }
           }
-        }
-      })
+        })
+      }
+
+
+
     } else {
       res.redirect("/login")
     }

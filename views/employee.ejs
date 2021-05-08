@@ -56,11 +56,14 @@
         Not Available to Regular Employees.
         <% } %>
       </th>
-      <th scope="col"> Leave Company? </th>
+      <th scope="col">
+        <a href='javascript:openLeaveCompanyBox(<%= data[x].userID %>,<%=data[x].companyID %>,<%= x %>,<%= data[x].power %>)'> Leave Company? </a>
+
+      </th>
       <th scope="col"> Destroy Company? </th>
     </tr>
     <tr>
-      <th class='rows' id='<%= 'row' + x %>' style='display:none'>
+      <th class='rows' id='<%= 'row' + x %>' style='display:none' scope="col">
         <div class='menuBox' id='<%= "menuBox" + x %>'>
         </div>
       </th>
@@ -71,7 +74,6 @@
 <% } else { %>
 There are no companies assoicated with this profile.
 <% }%>
-
 <% } else if (!self){ %>
 <h2> <%= data[0].firstName + '  '+ data[0].lastName %>'s Profile </h2>
 <h3> User Information </h3>
@@ -121,7 +123,6 @@ There are no companies assoicated with this profile.
       <th scope='col'>
         <% if(  (data[g].myPower > 1 && data[g].ePower == 0)   || (data[g].myPower == 2)){  %>
           <a href='javascript:openRemoveFromCompanyBox(<%= data[g].eID %>,<%=data[g].companyID %>,<%= g %>)'> Remove From Company? </a>
-
         <%} else { %>
         Not Available <br> to your Hierarchy
         <% } %>

@@ -159,8 +159,37 @@ function openChangeHierarchyBox(emplID, compID, ePower, menuBoxID) {
   document.getElementById('row' + menuBoxID).style.display = "";
 }
 
-function openChangeOwnerBox() {
+function openChangeOwnerBox(emplID,compID,menuBoxID) {
+  closeMenuBox();
+  var lines = '<th scope="col">';
 
+  lines += '</th>';
+  document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
+  document.getElementById('row' + menuBoxID).style.display = "";
+}
+
+function destroyCompany(emplID,compID,menuBoxID){
+  closeMenuBox();
+}
+function destroyCompanyFinal(emplID,compID,menuBoxID){
+  closeMenuBox();
+}
+
+function openLeaveCompanyBox(emplID,compID,menuBoxID,power){
+  closeMenuBox();
+  var lines = "";
+  if (power == 2){
+    lines += " If you left the company, there would no longer be an owner. <br> Either choose to confer ownership to someone else or destroy the company.";
+  }else{
+    lines += '<br><form action="/employee/' + emplID + '" method="POST">';
+    lines += '<input type="hidden" name="cid" value="' + compID + '">';
+    lines += '<input type="hidden" name="contract" value="leaveCompany">';
+    lines += "Are you sure you want to leave this company? <br> You will not be able to join again without using a code.";
+    lines += '<br><button type="submit" class="btn btn-dark">Submit</button>';
+    lines += '</form><br>';
+  }
+  document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
+  document.getElementById('row' + menuBoxID).style.display = "";
 }
 
 function openRemoveFromCompanyBox(emplID,compID,menuBoxID) {
