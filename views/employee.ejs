@@ -119,7 +119,13 @@ There are no companies assoicated with this profile.
         Not Available to Regular Employees.
         <% } %>
       </th>
-      <th scope='col'> Confer Ownership </th>
+      <th scope='col'>
+        <% if (data[g].myPower > 1){ %>
+        <a href='javascript:openChangeOwnerBox(<%= data[g].eID %>,<%=data[g].companyID %>,<%= g %>)'> Confer Ownership? </a>
+        <% } else {%>
+        Not Available to Regular Employees.
+        <% } %>
+      </th>
       <th scope='col'>
         <% if(  (data[g].myPower > 1 && data[g].ePower == 0)   || (data[g].myPower == 2)){  %>
           <a href='javascript:openRemoveFromCompanyBox(<%= data[g].eID %>,<%=data[g].companyID %>,<%= g %>)'> Remove From Company? </a>

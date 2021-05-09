@@ -159,10 +159,25 @@ function openChangeHierarchyBox(emplID, compID, ePower, menuBoxID) {
   document.getElementById('row' + menuBoxID).style.display = "";
 }
 
-function openChangeOwnerBox(emplID,compID,menuBoxID) {
+function openChangeOwnerBox(emplID,compID,menuBoxID){
+  closeMenuBox();
+  //have a prompt button
+  var lines = '<th scope="col">';
+  lines += "Are you sure? This action will turn you into a regular employee and the target into the new owner.<br>";
+  lines += "<a class='btn btn-dark' href='javascript:openTrueChangeOwnerBox(" +emplID + "," + compID + "," + menuBoxID +  ")'>I'm Sure.</a>"
+  lines += '</th>';
+  document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
+  document.getElementById('row' + menuBoxID).style.display = "";
+}
+function openTrueChangeOwnerBox(emplID,compID,menuBoxID) {
   closeMenuBox();
   var lines = '<th scope="col">';
-
+  lines += '<br><form action="/employee/' + emplID + '" method="POST">';
+  lines += '<input type="hidden" name="cid" value="' + compID + '">';
+  lines += '<input type="hidden" name="contract" value="conferOwnership">';
+  lines += 'Are you absolutely sure?';
+  lines += '<br><button type="submit" class="btn btn-dark">I am absolutely sure.</button>';
+  lines += '</form><br>';
   lines += '</th>';
   document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
   document.getElementById('row' + menuBoxID).style.display = "";
