@@ -1023,9 +1023,35 @@ app.route("/employee/:userid")
   })
   .post(function(req, res) {
     if (req.cookies.userData) {
-
       if (req.body.contract === "leaveCompany") {
-
+        // check the power level
+        var sQuery =
+        `
+        SELECT * FROM employeesInCompany
+        WHERE companyID = ? AND userID = ? AND power < 2;
+        `;
+        connection.query(sQuery,[req.body.cid,req.cookies.userData.id],function(errr,reslts,filds){
+          if (errr){
+            console.log(errr);
+            res.redirect("back");
+          } else if (reslts.length == 0){
+            console.log("Not A Member/Too Powerful");
+            res.redirect("back");
+          }else{
+            //Deletion Permitted
+            var dQuery =
+            `
+            DELETE FROM employeesInCompany
+            WHERE companyID = ? AND userID = ?;
+            `;
+            connection.query(dQuery,[req.body.cid,req.cookies.userData.id],function(error,results,fields){
+              if (error){
+                console.log(error);
+              }
+              res.redirect("back");
+            })
+          }
+        })
       } else {
         var sQuery =
           `
