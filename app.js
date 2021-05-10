@@ -405,7 +405,6 @@ app.route("/dashboard/join")
                 var iQuery =
                   `
               INSERT INTO employeesInCompany (userID,companyID,title,power) values (?,?,NULL,0);
-              SELECT * from company WHERE companyID = ?;
               `;
                 connection.query(iQuery, [req.cookies.userData.id, cid, cid], function(error, results, fields) {
                   if (error) {
@@ -416,15 +415,7 @@ app.route("/dashboard/join")
                       posiMsg: null
                     })
                   } else {
-                    res.render('companydashboard', {
-                      errorMsg: null,
-                      posiMsg: null,
-                      power: 0,
-                      fName: req.cookies.userData.fName,
-                      cid: req.params.cnumber,
-                      cName: results[1].cName,
-                      banner: 'Workspace: Company Dashboard'
-                    })
+                    res.redirect("/dashboard/company/" + cid)
                   }
                 })
               }
@@ -1131,7 +1122,23 @@ app.route("/employee/:userid")
                   })
                 }
               })
-            } else {
+            } else if (req.body.contract === "conferOwnership"){
+              var nQuery =
+              `
+              Update employeesInCompany
+              SET power = 1
+              WHERE userID = ? AND companyID = ?;
+              UPDATE employeesInCompany
+              SET power = 2
+              WHERE userID = ? AND companyID = ?;
+              `;
+              connection.query(nQuery,[req.cookies.userData.id,req.body.cid,req.params.userid,req.body.cid],function(error,results,fields){
+                if (error){
+                  console.log(error);
+                }
+                res.redirect("back");
+              })
+            }else {
               console.log("Non-Valid Contract");
               res.redirect("back");
             }

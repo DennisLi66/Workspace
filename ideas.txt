@@ -57,3 +57,10 @@ IF OWNER:
  EMPLOYEE PAGE: Pass Ownership to
 IF ADMIN
   Employees Page: Change TItle or Fire employee who is not admin or owner
+
+
+
+
+  BUGS:
+  Annoucement PAGE;
+  Join Company Page
