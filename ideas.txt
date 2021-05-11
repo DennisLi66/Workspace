@@ -58,7 +58,7 @@ IF OWNER:
 IF ADMIN
   Employees Page: Change TItle or Fire employee who is not admin or owner
 
-
+Put destroying the company in a smarter place, like under settings for company or something
 
 
   BUGS:

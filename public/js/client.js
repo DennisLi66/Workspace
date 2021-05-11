@@ -185,6 +185,13 @@ function openTrueChangeOwnerBox(emplID,compID,menuBoxID) {
 
 function destroyCompany(emplID,compID,menuBoxID){
   closeMenuBox();
+  //have a prompt button
+  var lines = '<th scope="col">';
+  lines += "Are you sure? This action will permanently delete your company and remove your employees from interacting with it.<br>";
+  lines += "<a class='btn btn-dark' href='javascript:destroyCompanyFinal(" +emplID + "," + compID + "," + menuBoxID +  ")'>I'm Sure.</a>"
+  lines += '</th>';
+  document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
+  document.getElementById('row' + menuBoxID).style.display = "";
 }
 function destroyCompanyFinal(emplID,compID,menuBoxID){
   closeMenuBox();

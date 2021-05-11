@@ -48,4 +48,16 @@ create table announcements(
     title varchar(255) not null,
     content text not null,
     recency datetime
-)
+);
+
+create table events(
+	id int not null auto_increment primary key,
+    authorID int not null,
+	companyID int,
+    title varchar(255),
+    content text,
+    startDate datetime,
+    endDate datetime,
+    recency datetime,
+    forma varchar(255) -- Personal, CompanyID, etc
+);

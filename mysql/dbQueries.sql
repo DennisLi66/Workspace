@@ -59,6 +59,10 @@ select * from employeesInCompany left join company on company.companyID = employ
 -- LEFT JOIN company ON company.companyID = employeesInCompany.companyID
 -- left join users ON eic.userID = users.userID
 
+      SELECT * FROM employeesInCompany
+      LEFT JOIN company 
+      ON company.companyID = employeesInCompany.companyID;
+
 
 
 -- Confirm that the person im trying to remove has less power than me

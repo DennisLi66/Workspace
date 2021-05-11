@@ -1167,18 +1167,53 @@ app.get("/employees", function(req, res) {
   }
 }) //same as above
 
+app.route("/settings/:cid")
+  .get(function(req,res){})
+  .post(function(req,res){})
 
+// Calendar
+app.route("/addevent")
+  .get(function(req,res){
+    if (req.cookies.userData){
+      var sQuery =
+      //check power for companywide Event
+      //check affiliated companies
+      `
+      SELECT userID,company.companyID as companyID, cName FROM employeesInCompany
+      LEFT JOIN company ON company.companyID = employeesInCompany.companyID
+      WHERE userID = ?;
+      SELECT * FROM employeesInCompany WHERE userID = ?  AND power > 0;
+      `
+      connection.query(sQuery,[req.cookies.userData.id,req.cookies.userData.id],function(error,results,fields){
+        if (error){
+          console.log(error);
+          res.redirect("/dashboard");
+        }
+        else{
+          res.render("addevent",{
+            banner: 'Workspace: Adding an Event',
+            fName: req.cookies.userData.fName,
+            pComps: results[1],
+            comps: results[0]
+          })
+        }
+      })
+    }else{
+      res.redirect("/login");
+    }
+  })
+// For All Companies
+app.get("/calendar", function(req, res) {
+  res.render("calendar");
+})
+//For the company with the cid
+app.get("/calendar/:cid",function(req,res){
 
-
-
-
-
+})
 
 app.get("/messages", function(req, res) {})
 
 app.get("/messages/:userid", function(req, res) {})
-
-app.get("/calendar", function(req, res) {})
 
 app.get("/todo/", function(req, res) {})
 

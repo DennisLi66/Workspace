@@ -1,0 +1,25 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<h3> Adding a New Event </h3>
+
+<form>
+  <label for="title"> Title: </label><br>
+  <input type="text" name="title" required><br>
+  <label for="content"> Content: </label><br>
+  <input type="text" name="content" required><br>
+  <label for="uses"> Choose Association</label><br>
+  <select name='uses'>
+    <option value="personal"> For Personal Use Only </option>
+    <% for (var x = 0; x < comps.length; x++){ %>
+      <option value="<%=comps[x].companyID%>"> ID: <%=comps[x].companyID%> Name: <%=comps[x].cName%> </option>
+    <% } %>
+  </select><br>
+  <label for="start"> Start Date: </label><br>
+  <input type="datetime-local" name="start" required><br>
+  <label for="end"> End Date: </label><br>
+  <input type="datetime-local" name="end" required><br>
+<button type="submit" class="btn btn-danger">Add Event</button>
+</form>
+
+<%- include('partials/footer') %>

@@ -32,7 +32,6 @@
     <th scope="col"> Site Hierarchy </th>
     <th scope="col"> Change Title </th>
     <th scope="col"> Leave Company </th>
-    <th scope="col"> Destroy Company </th>
   </thead>
   <tbody>
     <% for(let x = 0; x < data.length; x++){%>
@@ -60,7 +59,6 @@
         <a href='javascript:openLeaveCompanyBox(<%= data[x].userID %>,<%=data[x].companyID %>,<%= x %>,<%= data[x].power %>)'> Leave Company? </a>
 
       </th>
-      <th scope="col"> Destroy Company? </th>
     </tr>
     <tr>
       <th class='rows' id='<%= 'row' + x %>' style='display:none' scope="col">
