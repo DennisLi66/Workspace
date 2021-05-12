@@ -1182,7 +1182,7 @@ app.route("/addevent")
       SELECT userID,company.companyID as companyID, cName FROM employeesInCompany
       LEFT JOIN company ON company.companyID = employeesInCompany.companyID
       WHERE userID = ?;
-      SELECT * FROM employeesInCompany WHERE userID = ?  AND power > 0;
+      SELECT companyID FROM employeesInCompany WHERE userID = ?  AND power > 0;
       `
       connection.query(sQuery,[req.cookies.userData.id,req.cookies.userData.id],function(error,results,fields){
         if (error){

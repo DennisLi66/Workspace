@@ -234,3 +234,32 @@ function openRemoveFromCompanyBox(emplID,compID,menuBoxID) {
 //     }
 //     });
 //   </script>
+
+
+
+
+
+
+function addEventAllowance(){
+  //if the user has sufficent power permit the event to be companywide
+  // read the json and see if the value of the select is in it
+    document.getElementById("range").innerHTML = "";
+  var arr = JSON.parse(mysqlres);
+  var truth = false;
+  for (var i = 0; i < arr.length; i++){
+    if (arr[i].companyID == parseInt(document.getElementById('uses').value)){
+      truth = true;
+      break;
+    }
+  }
+  console.log(truth);
+  if (truth){
+    var lines = "<label> Who will see this message? </label><br>"
+    lines += "<select name='range'>";
+    lines += "<option value='1'> Only Me </>";
+    lines += "<option value='2'> Admins and Owners of the company </>";;
+    lines += "<option value='3'> Everyone in the company </>";;
+    lines += "</select>";
+    document.getElementById("range").innerHTML = lines;
+  }
+}

@@ -2,6 +2,9 @@
 <%- include('partials/navbar') %>
 
 <h3> Adding a New Event </h3>
+<script>
+  var mysqlres = '<%- JSON.stringify(pComps) %>'
+</script>
 
 <form>
   <label for="title"> Title: </label><br>
@@ -9,12 +12,13 @@
   <label for="content"> Content: </label><br>
   <input type="text" name="content" required><br>
   <label for="uses"> Choose Association</label><br>
-  <select name='uses'>
+  <select name='uses' id="uses" onchange='javascript:addEventAllowance()'>
     <option value="personal"> For Personal Use Only </option>
     <% for (var x = 0; x < comps.length; x++){ %>
       <option value="<%=comps[x].companyID%>"> ID: <%=comps[x].companyID%> Name: <%=comps[x].cName%> </option>
     <% } %>
   </select><br>
+  <div id='range'> </div>
   <label for="start"> Start Date: </label><br>
   <input type="datetime-local" name="start" required><br>
   <label for="end"> End Date: </label><br>
