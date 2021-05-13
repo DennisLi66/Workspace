@@ -1226,6 +1226,17 @@ app.route("/addevent")
         //check employee is in company
         if (req.body.range){
           console.log(req.body.range)
+        }else{ //no range
+          var iQuery =
+          `
+          INSERT INTO events (authorID,title,content,startDate,endDate,recency,forma,companyID) VALUES (?,?,?,?,?,NOW(),"PERSONAL",?);
+          `;
+          connection.query(iQuery,[req.cookies.userData.id,req.body.title,req.body.content,req.body.start,req.body.end,req.body.uses],function(error,results,fields){
+            if (error){
+              console.log(error);
+            }
+            res.redirect("back");
+          })
         }
       }
     }else{

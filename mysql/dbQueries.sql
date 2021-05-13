@@ -5,6 +5,7 @@ select * from users;
 select * from company;
 select * from employeesInCompany;
 select * from joinLinks;
+select * from events;
 
 -- Company Creation Query
 -- INSERT INTO company (cName)

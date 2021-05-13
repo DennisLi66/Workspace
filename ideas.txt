@@ -64,3 +64,4 @@ Put destroying the company in a smarter place, like under settings for company o
   BUGS:
   Annoucement PAGE;
   Join Company Page
+  Switch After joining a company to redirect instead of render
