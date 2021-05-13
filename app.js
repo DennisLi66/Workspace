@@ -1215,7 +1215,7 @@ app.route("/addevent")
         var iQuery =
         `
         INSERT INTO events (authorID,title,content,startDate,endDate,recency,forma) VALUES (?,?,?,?,?,NOW(),"PERSONAL");
-        `
+        `;
         connection.query(iQuery,[req.cookies.userData.id,req.body.title,req.body.content,req.body.start,req.body.end],function(error,results,fields){
           if (error){
             console.log(error);
@@ -1225,7 +1225,49 @@ app.route("/addevent")
       }else{
         //check employee is in company
         if (req.body.range){
-          console.log(req.body.range)
+          if (req.body.range == 1 || req.body.range === '1'){
+            //Personal
+            var iQuery =
+            `
+            INSERT INTO events (authorID,companyID,title,content,startDate,endDate,recency,forma) VALUES (?,?,?,?,?,?,NOW(),"SELF");
+            `;
+            connection.query(iQuery,[req.cookies.userData.id,req.body.uses,req.body.title,
+                                     req.body.content,req.body.start,req.body.end],function(error,results,fields){
+              if (error){
+                console.log(error);
+              }
+              if (error){
+                console.log(error);
+              }
+              res.redirect("back");
+            })
+          } else if (req.body.range == 2 || req.body.range === '2'){
+            //WHole Company
+            var iQuery =
+            `
+            INSERT INTO events (authorID,companyID,title,content,startDate,endDate,recency,forma) VALUES (?,?,?,?,?,?,NOW(),"ADMINS");
+            `;
+            connection.query(iQuery,[req.cookies.userData.id,req.body.uses,req.body.title,
+                                     req.body.content,req.body.start,req.body.end],function(error,results,fields){
+              if (error){
+                console.log(error);
+              }
+              res.redirect("back");
+            })
+          }else{
+            //Admins and Owners
+            var iQuery =
+            `
+            INSERT INTO events (authorID,companyID,title,content,startDate,endDate,recency,forma) VALUES (?,?,?,?,?,?,NOW(),"COMPANY");
+            `;
+            connection.query(iQuery,[req.cookies.userData.id,req.body.uses,req.body.title,
+                                     req.body.content,req.body.start,req.body.end],function(error,results,fields){
+              if (error){
+                console.log(error);
+              }
+              res.redirect("back");
+            })
+          }
         }else{ //no range
           var iQuery =
           `
