@@ -1202,6 +1202,36 @@ app.route("/addevent")
       res.redirect("/login");
     }
   })
+  .post(function(req,res){
+    if (req.cookies.userData){
+      // check power level, then insert if power level is valid
+      //read variables
+      //check end date > start date
+      //change content to textarea
+      if (req.body.end < req.body.start){
+        console.log("Invalid Date Combination");
+        res.redirect("back");
+      }else if (req.body.uses === "personal"){
+        var iQuery =
+        `
+        INSERT INTO events (authorID,title,content,startDate,endDate,recency,forma) VALUES (?,?,?,?,?,NOW(),"PERSONAL");
+        `
+        connection.query(iQuery,[req.cookies.userData.id,req.body.title,req.body.content,req.body.start,req.body.end],function(error,results,fields){
+          if (error){
+            console.log(error);
+          }
+          res.redirect("back");
+        })
+      }else{
+        //check employee is in company
+        if (req.body.range){
+          console.log(req.body.range)
+        }
+      }
+    }else{
+      res.redirect("/login");
+    }
+  })
 // For All Companies
 app.get("/calendar", function(req, res) {
   res.render("calendar");

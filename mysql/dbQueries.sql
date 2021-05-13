@@ -59,7 +59,8 @@ select * from employeesInCompany left join company on company.companyID = employ
 -- LEFT JOIN company ON company.companyID = employeesInCompany.companyID
 -- left join users ON eic.userID = users.userID
 
-      SELECT * FROM employeesInCompany
+      SELECT userID,company.companyID as companyID, cName
+      FROM employeesInCompany
       LEFT JOIN company 
       ON company.companyID = employeesInCompany.companyID;
 

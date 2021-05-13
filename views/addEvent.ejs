@@ -6,7 +6,7 @@
   var mysqlres = '<%- JSON.stringify(pComps) %>'
 </script>
 
-<form>
+<form action="/addEvent" method="POST">
   <label for="title"> Title: </label><br>
   <input type="text" name="title" required><br>
   <label for="content"> Content: </label><br>
