@@ -62,15 +62,49 @@ select * from employeesInCompany left join company on company.companyID = employ
 -- LEFT JOIN company ON company.companyID = employeesInCompany.companyID
 -- left join users ON eic.userID = users.userID
 
-      SELECT userID,company.companyID as companyID, cName
-      FROM employeesInCompany
-      LEFT JOIN company 
-      ON company.companyID = employeesInCompany.companyID;
+--       SELECT userID,company.companyID as companyID, cName
+--       FROM employeesInCompany
+--       LEFT JOIN company 
+--       ON company.companyID = employeesInCompany.companyID;
 
 
 
 -- Confirm that the person im trying to remove has less power than me
-SELECT * FROM employeesInCompany 
-left join employeesInCOmpany as eic
-ON employeesInCompany.companyID = eic.companyID
-WHERE employeesInCompany.power > eic.power
+-- SELECT * FROM employeesInCompany 
+-- left join employeesInCOmpany as eic
+-- ON employeesInCompany.companyID = eic.companyID
+-- WHERE employeesInCompany.power > eic.power
+
+select * from events left join employeesincompany on employeesincompany.companyID = events.companyID;
+
+-- left join users
+-- on users.userID = events.authorID
+
+
+-- For Month
+SELECT id,listings.authorID as authorID, firstName, lastName, companyID, title, content, startDate, endDate, forma, userID, power FROM 
+(
+select id, authorID, events.companyID as companyID, events.title, content, startDate, endDate, forma, userID, power
+from events 
+left join employeesincompany 
+on employeesincompany.companyID = events.companyID 
+where (forma = 'PERSONAL' AND authorID = 2)
+OR (forma = "SELF" AND authorID = 1 and employeesincompany.userID = 2)
+OR (forma = "ADMINS" AND employeesincompany.userID = 2 AND power > 0)
+OR (forma = "COMPANY" AND employeesincompany.userID = 2)
+) 
+listings
+left join (select userID as authorID, firstName,lastName from users) users
+on listings.authorID = users.authorID
+WHERE MONTH(startDate) = 4 OR MONTH(endDate) = 4
+ORDER BY startDate DESC
+
+
+
+
+
+
+
+
+
+

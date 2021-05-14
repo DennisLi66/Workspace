@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+<%- include('partials/navbar') %>
+
+<% if (cond === "Y"){ %>
+<h2> Events for the Year of <%= condtext %></h2>
+<% } %>
+<% for (let x = 0; x < data.length; x++){ %>
+<div class="card">
+  <div class="card-header">
+    ID: <%= data[x].id  %><br>
+    <%= data[x].title %><br>
+    Written By: <%= data[x].firstName %>
+    <% if (data[x].forma === "PERSONAL"){ %>
+    , Addressed to Self
+    <% } else if (data[x].forma === "SELF"){ %>
+    of <%= data[x].cName %>, Addressed to Self
+    <% } else if (data[x].forma === "ADMINS"){ %>
+    of <%= data[x].cName %>, Addressed to Admins and Owner
+    <% } else if (data[x].forma === "COMPANY"){ %>
+    of <%= data[x].cName %>, Addressed to the Company
+    <% } %>
+    <br>
+    From <%= data[x].startDate %> to <%= data[x].endDate %>
+  </div>
+  <div class="card-body">
+    <%= data[x].content %>
+  </div>
+</div>
+<% } %>
+
+<%- include('partials/footer') %>

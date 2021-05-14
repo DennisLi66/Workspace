@@ -1285,6 +1285,56 @@ app.route("/addevent")
       res.redirect("/login");
     }
   })
+
+app.route("/todo")
+  .get(function(req, res) {
+    if (req.cookies.userData){
+      if (req.query.year && !req.query.month && !req.query.day){
+        var sQuery =
+        `
+        SELECT id,listings.authorID as authorID, firstName, lastName, listings.companyID,cName, title, content, startDate, endDate, forma, userID, power FROM
+        (
+        select id, authorID, events.companyID as companyID, events.title, content, startDate, endDate, forma, userID, power
+        from events
+        left join employeesincompany
+        on employeesincompany.companyID = events.companyID
+        where (forma = 'PERSONAL' AND authorID = ?)
+        OR (forma = "SELF" AND authorID = ? and employeesincompany.userID = ?)
+        OR (forma = "ADMINS" AND employeesincompany.userID = ? AND power > 0)
+        OR (forma = "COMPANY" AND employeesincompany.userID = ?)
+        )
+        listings
+        left join (select userID as authorID, firstName,lastName from users) users
+        on listings.authorID = users.authorID
+        left join company
+        ON company.companyID = listings.companyID
+        WHERE YEAR(startDate) = ? OR YEAR(endDate) = ?
+        ORDER BY startDate DESC
+        `;
+        connection.query(sQuery,[req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,
+        req.query.year,req.query.year],function(error,results,fields){
+          if (error){
+            console.log(error);
+          }else{
+            res.render("readEvents",{
+              banner: "Workspace: Events",
+              fName: req.cookies.userData.fName,
+              data: results,
+              cond: "Y",
+              condtext: req.query.year
+            })
+          }
+        })
+    }
+      else{
+        res.redirect("/dashboard"); //change to today
+      }
+    }else{
+      res.redirect("/login");
+    }
+  })
+
+
 // For All Companies
 app.get("/calendar", function(req, res) {
   res.render("calendar");
@@ -1297,14 +1347,6 @@ app.get("/calendar/:cid",function(req,res){
 app.get("/messages", function(req, res) {})
 
 app.get("/messages/:userid", function(req, res) {})
-
-app.get("/todo/", function(req, res) {})
-
-app.get("/todo/:year/:month/:day", function(req, res) {})
-
-app.get("/todo/:year/:month", function(req, res) {})
-
-app.get("/todo/:year", function(req, res) {})
 
 app.listen(3000, function() {
   console.log("Server Started.")
