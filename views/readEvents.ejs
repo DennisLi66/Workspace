@@ -4,6 +4,14 @@
 <% if (cond === "Y"){ %>
 <h2> Events for the Year of <%= condtext %></h2>
 <% } %>
+<% if (cond === "M"){ %>
+<h2> Events for the Month of <%= condMonth %>, <%= condtext %></h2>
+<% } %>
+
+<% if (data.length == 0){ %>
+  There are no events to display.
+  <% } %>
+
 <% for (let x = 0; x < data.length; x++){ %>
 <div class="card">
   <div class="card-header">

@@ -81,24 +81,31 @@ select * from events left join employeesincompany on employeesincompany.companyI
 -- on users.userID = events.authorID
 
 
--- For Month
-SELECT id,listings.authorID as authorID, firstName, lastName, companyID, title, content, startDate, endDate, forma, userID, power FROM 
-(
-select id, authorID, events.companyID as companyID, events.title, content, startDate, endDate, forma, userID, power
-from events 
-left join employeesincompany 
-on employeesincompany.companyID = events.companyID 
-where (forma = 'PERSONAL' AND authorID = 2)
-OR (forma = "SELF" AND authorID = 1 and employeesincompany.userID = 2)
-OR (forma = "ADMINS" AND employeesincompany.userID = 2 AND power > 0)
-OR (forma = "COMPANY" AND employeesincompany.userID = 2)
-) 
-listings
-left join (select userID as authorID, firstName,lastName from users) users
-on listings.authorID = users.authorID
-WHERE MONTH(startDate) = 4 OR MONTH(endDate) = 4
-ORDER BY startDate DESC
-
+        SELECT id,listings.authorID as authorID, firstName, lastName, listings.companyID,cName, title, content, startDate, endDate, forma, userID, power FROM
+        (
+        select id, authorID, events.companyID as companyID, events.title, content, startDate, endDate, forma, userID, power
+        from events
+        left join employeesincompany
+        on employeesincompany.companyID = events.companyID
+        where (forma = 'PERSONAL' AND authorID = 1)
+        OR (forma = "SELF" AND authorID = 1 and employeesincompany.userID = 1)
+        OR (forma = "ADMINS" AND employeesincompany.userID = 1 AND power > 0)
+        OR (forma = "COMPANY" AND employeesincompany.userID = 1)
+        )
+        listings
+        left join (select userID as authorID, firstName,lastName from users) users
+        on listings.authorID = users.authorID
+        left join company
+        ON company.companyID = listings.companyID
+        WHERE 
+        (
+        (YEAR(startDate) < 2021 OR (YEAR(startDate) = 2021 AND MONTH(startDate) < 5) )
+        AND 
+        (YEAR(endDate) > 2021 OR    (YEAR(endDate) = 2021   AND Month(endDate)  > 5)    )
+        )  -- BETWEEn
+        OR (YEAR(endDate) = 2021 AND MONTH(endDate) = 5)  -- ENDS AT
+        OR (YEAR(startDate ) = 2021 AND MONTH(startDate) = 5 )-- STARTS AT
+        ORDER BY startDate DESC
 
 
 
