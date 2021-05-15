@@ -1384,7 +1384,76 @@ app.route("/todo")
       }
         //compare days
       }
+      else if (req.query.year && req.query.month && !req.query.day){
+        var cYear = req.query.year;
+        //FIX THIS CHECK MONTH LEGAL
+        if (req.query.month < 1 || req.query.month > 12){
+          res.redirect("/dashboard");
+        }
+        else {
+          var sQuery =
+          `
+          SELECT id,listings.authorID as authorID, firstName, lastName, listings.companyID,cName, title, content, startDate, endDate, forma, userID, power FROM
+          (
+          select id, authorID, events.companyID as companyID, events.title, content, startDate, endDate, forma, userID, power
+          from events
+          left join employeesincompany
+          on employeesincompany.companyID = events.companyID
+          where (forma = 'PERSONAL' AND authorID = ?)
+          OR (forma = "SELF" AND authorID = ? and employeesincompany.userID = ?)
+          OR (forma = "ADMINS" AND employeesincompany.userID = ? AND power > 0)
+          OR (forma = "COMPANY" AND employeesincompany.userID = ?)
+          )
+          listings
+          left join (select userID as authorID, firstName,lastName from users) users
+          on listings.authorID = users.authorID
+          left join company
+          ON company.companyID = listings.companyID
+          WHERE
+          (
+          (YEAR(startDate) < ? OR (YEAR(startDate) = ? AND MONTH(startDate) < ?) )
+          AND
+          (YEAR(endDate) > ? OR    (YEAR(endDate) = ?   AND Month(endDate)  > ?)    )
+          )
+          OR (YEAR(endDate) = ? AND MONTH(endDate) = ?)
+          OR (YEAR(startDate ) = ? AND MONTH(startDate) = ? )
+          ORDER BY startDate DESC
+          `;
+          var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        connection.query(sQuery,[req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,
+        cYear,cYear,req.query.month,cYear,cYear,req.query.month,cYear,req.query.month,cYear,req.query.month],
+          function(error,results,fields){
+            if (error){
+              console.log(error);
+              res.redirect("/dashboard");
+            }else{
+              res.render("readEvents",{
+                banner: "Workspace: Events",
+                fName: req.cookies.userData.fName,
+                data: results,
+                cond: "M",
+                condtext: cYear,
+                condMonth: months[req.query.month-1]
+              })
+            }
+
+        })
+      }
+      }
+      else if (req.query.year && req.query.month && req.query.day){
+        //Specific
+      }
+      else if (!req.query.year && !req.query.month && req.query.day){
+        ///Assume this month and year
+      }
+      else if (!req.query.year && req.query.month && req.query.day){
+        //Assume this year
+      }
+      else if (!req.query.year && !req.query.month && !req.query.day){
+        //Assume Today
+      }
       else{
+        // invalid combination: year and day
         res.redirect("/dashboard"); //change to today
       }
     }else{
