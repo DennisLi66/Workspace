@@ -24,7 +24,6 @@ var connection = mysql.createConnection({
 })
 connection.connect();
 
-
 //logic
 function checkValidDay(day, month, year) {
   var months30 = [9, 4, 6, 11];
@@ -50,9 +49,6 @@ function checkValidDay(day, month, year) {
     return true;
   }
 }
-
-
-
 
 //Not Logged in
 app.get("/", function(req, res) {
@@ -1359,7 +1355,6 @@ app.route("/todo")
     }
       else if (!req.query.year && req.query.month && !req.query.day){
         var cYear = new Date().getFullYear();
-        //FIX THIS CHECK MONTH LEGAL
         if (req.query.month < 1 || req.query.month > 12){
           res.redirect("/dashboard");
         }
@@ -1525,12 +1520,21 @@ app.route("/todo")
       }
       else if (!req.query.year && !req.query.month && req.query.day){
         ///Assume this month and year
+        var cYear = new Date().getFullYear();
+        var cMonth = new Date().getMonth()+1;
+        res.redirect("/todo?day=" + req.query.day + "&month=" + cMonth + "&year=" + cYear);
       }
       else if (!req.query.year && req.query.month && req.query.day){
         //Assume this year
+        var cYear = new Date().getFullYear();
+        res.redirect("/todo?day=" + req.query.day + "&month=" + req.query.month + "&year=" + cYear);
       }
       else if (!req.query.year && !req.query.month && !req.query.day){
         //Assume Today
+        var cYear = new Date().getFullYear();
+        var cMonth = new Date().getMonth()+1;
+        var cDay = new Date().getDate();
+        res.redirect("/todo?day=" + cDay + "&month=" + cMonth + "&year=" + cYear);
       }
       else{
         // invalid combination: year and day
