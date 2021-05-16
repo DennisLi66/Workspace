@@ -7,6 +7,9 @@
 <% if (cond === "M"){ %>
 <h2> Events for the Month of <%= condMonth %>, <%= condtext %></h2>
 <% } %>
+<% if (cond === "D"){ %>
+<h2> Events for <%= condMonth %> <%= condDay%>, <%= condtext %></h2>
+<% } %>
 
 <% if (data.length == 0){ %>
   There are no events to display.

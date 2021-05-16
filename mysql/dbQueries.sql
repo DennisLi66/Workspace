@@ -99,12 +99,10 @@ select * from events left join employeesincompany on employeesincompany.companyI
         ON company.companyID = listings.companyID
         WHERE 
         (
-        (YEAR(startDate) < 2021 OR (YEAR(startDate) = 2021 AND MONTH(startDate) < 5) )
+        (YEAR(startDate) < 2021 OR (YEAR(startDate) = 2021 AND MONTH(startDate) < 5)  OR  (YEAR(startDate) = 2021 AND MONTH(startDate) = 5 AND DAY(startDate) <=  28            )        )
         AND 
-        (YEAR(endDate) > 2021 OR    (YEAR(endDate) = 2021   AND Month(endDate)  > 5)    )
-        )  -- BETWEEn
-        OR (YEAR(endDate) = 2021 AND MONTH(endDate) = 5)  -- ENDS AT
-        OR (YEAR(startDate ) = 2021 AND MONTH(startDate) = 5 )-- STARTS AT
+        (YEAR(endDate) > 2021 OR    (YEAR(endDate) = 2021   AND Month(endDate)  > 5)  OR   (YEAR(endDate) = 2021 AND MONTH(endDate) = 5 AND DAY(endDate) >=  28           )       )
+        )
         ORDER BY startDate DESC
 
 

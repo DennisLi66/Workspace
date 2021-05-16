@@ -24,6 +24,36 @@ var connection = mysql.createConnection({
 })
 connection.connect();
 
+
+//logic
+function checkValidDay(day, month, year) {
+  var months30 = [9, 4, 6, 11];
+  if (year < 0) {
+    return false;
+  } else if (month < 1 || month > 12) {
+    return false;
+  } else if (day < 1 || day > 31) {
+    return false;
+  } else if (day < 29) {
+    return true;
+  } else if (months30.includes(month) && day > 30) {
+    return false;
+  } else if (month == 2 && day > 29) {
+    return false;
+  } else if (day == 29 && month == 2) {
+    if (((year % 4 == 0) && (year % 100 != 0)) || (year % 400 == 0)) {
+      return true;
+    } else {
+      return false;
+    }
+  } else {
+    return true;
+  }
+}
+
+
+
+
 //Not Logged in
 app.get("/", function(req, res) {
   //if user logged in redirect to dashboard
@@ -1308,11 +1338,11 @@ app.route("/todo")
         on listings.authorID = users.authorID
         left join company
         ON company.companyID = listings.companyID
-        WHERE (YEAR(startDate) <= ? AND YEAR(endDate) >= ?) OR YEAR(endDate) = ? OR YEAR(startDate) = ?
+        WHERE (YEAR(startDate) <= ? AND YEAR(endDate) >= ?)
         ORDER BY startDate DESC
         `;
         connection.query(sQuery,[req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,
-        req.query.year,req.query.year,req.query.year,req.query.year],function(error,results,fields){
+        req.query.year,req.query.year],function(error,results,fields){
           if (error){
             console.log(error);
                           res.redirect("/dashboard");
@@ -1354,17 +1384,15 @@ app.route("/todo")
           ON company.companyID = listings.companyID
           WHERE
           (
-          (YEAR(startDate) < ? OR (YEAR(startDate) = ? AND MONTH(startDate) < ?) )
+          (YEAR(startDate) < ? OR (YEAR(startDate) = ? AND MONTH(startDate) <= ?) )
           AND
-          (YEAR(endDate) > ? OR    (YEAR(endDate) = ?   AND Month(endDate)  > ?)    )
+          (YEAR(endDate) > ? OR    (YEAR(endDate) = ?   AND Month(endDate)  >= ?)    )
           )
-          OR (YEAR(endDate) = ? AND MONTH(endDate) = ?)
-          OR (YEAR(startDate ) = ? AND MONTH(startDate) = ? )
           ORDER BY startDate DESC
           `;
           var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
         connection.query(sQuery,[req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,
-        cYear,cYear,req.query.month,cYear,cYear,req.query.month,cYear,req.query.month,cYear,req.query.month],
+        cYear,cYear,req.query.month,cYear,cYear,req.query.month],
           function(error,results,fields){
             if (error){
               console.log(error);
@@ -1442,6 +1470,58 @@ app.route("/todo")
       }
       else if (req.query.year && req.query.month && req.query.day){
         //Specific
+        var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+        // check month and day is valid include leap years
+        if (!checkValidDay(req.query.day,req.query.month,req.query.year)){
+          res.redirect("/dashboard");
+        }
+        else{
+        var sQuery =
+        `
+        SELECT id,listings.authorID as authorID, firstName, lastName, listings.companyID,cName, title, content, startDate, endDate, forma, userID, power FROM
+        (
+        select id, authorID, events.companyID as companyID, events.title, content, startDate, endDate, forma, userID, power
+        from events
+        left join employeesincompany
+        on employeesincompany.companyID = events.companyID
+        where (forma = 'PERSONAL' AND authorID = ?)
+        OR (forma = "SELF" AND authorID = ? and employeesincompany.userID = ?)
+        OR (forma = "ADMINS" AND employeesincompany.userID = ? AND power > 0)
+        OR (forma = "COMPANY" AND employeesincompany.userID = ?)
+        )
+        listings
+        left join (select userID as authorID, firstName,lastName from users) users
+        on listings.authorID = users.authorID
+        left join company
+        ON company.companyID = listings.companyID
+        WHERE
+        (
+        (YEAR(startDate) < ? OR (YEAR(startDate) = ? AND MONTH(startDate) < ?)  OR  (YEAR(startDate) = ? AND MONTH(startDate) = ? AND DAY(startDate) <=  ?            )        )
+        AND
+        (YEAR(endDate) > ? OR    (YEAR(endDate) = ?   AND Month(endDate)  > ?)  OR   (YEAR(endDate) = ? AND MONTH(endDate) = ? AND DAY(endDate) >=  ?           )       )
+        )
+        ORDER BY startDate DESC
+        `
+        connection.query(sQuery,[req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,req.cookies.userData.id,
+        req.query.year,req.query.year,req.query.month,req.query.year,req.query.month,req.query.day,
+        req.query.year,req.query.year,req.query.month,req.query.year,req.query.month,req.query.day],
+        function(error,results,fields){
+          if (error){
+            console.log(error);
+            res.redirect("/dashboard");
+          }else{
+            res.render("readEvents",{
+              banner: "Workspace: Events",
+              fName: req.cookies.userData.fName,
+              data: results,
+              cond: "D",
+              condtext: req.query.year,
+              condMonth: months[req.query.month-1],
+              condDay: req.query.day
+            })
+          }
+        })
+        }
       }
       else if (!req.query.year && !req.query.month && req.query.day){
         ///Assume this month and year

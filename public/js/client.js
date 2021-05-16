@@ -146,9 +146,9 @@ function openChangeHierarchyBox(emplID, compID, ePower, menuBoxID) {
   lines += '<input type="hidden" name="cid" value="' + compID + '">';
   lines += '<input type="hidden" name="ePower" value="' + ePower + '">';
   lines += '<input type="hidden" name="contract" value="changeHierarchy">';
-  if (ePower == 1){
+  if (ePower == 1) {
     lines += "This will turn this user into a regular employee.<br>"
-  }else{
+  } else {
     lines += "This will turn this user into an admin.<br>"
   }
   lines += 'Are You Sure?';
@@ -159,17 +159,18 @@ function openChangeHierarchyBox(emplID, compID, ePower, menuBoxID) {
   document.getElementById('row' + menuBoxID).style.display = "";
 }
 
-function openChangeOwnerBox(emplID,compID,menuBoxID){
+function openChangeOwnerBox(emplID, compID, menuBoxID) {
   closeMenuBox();
   //have a prompt button
   var lines = '<th scope="col">';
   lines += "Are you sure? This action will turn you into a regular employee and the target into the new owner.<br>";
-  lines += "<a class='btn btn-dark' href='javascript:openTrueChangeOwnerBox(" +emplID + "," + compID + "," + menuBoxID +  ")'>I'm Sure.</a>"
+  lines += "<a class='btn btn-dark' href='javascript:openTrueChangeOwnerBox(" + emplID + "," + compID + "," + menuBoxID + ")'>I'm Sure.</a>"
   lines += '</th>';
   document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
   document.getElementById('row' + menuBoxID).style.display = "";
 }
-function openTrueChangeOwnerBox(emplID,compID,menuBoxID) {
+
+function openTrueChangeOwnerBox(emplID, compID, menuBoxID) {
   closeMenuBox();
   var lines = '<th scope="col">';
   lines += '<br><form action="/employee/' + emplID + '" method="POST">';
@@ -183,26 +184,27 @@ function openTrueChangeOwnerBox(emplID,compID,menuBoxID) {
   document.getElementById('row' + menuBoxID).style.display = "";
 }
 
-function destroyCompany(emplID,compID,menuBoxID){
+function destroyCompany(emplID, compID, menuBoxID) {
   closeMenuBox();
   //have a prompt button
   var lines = '<th scope="col">';
   lines += "Are you sure? This action will permanently delete your company and remove your employees from interacting with it.<br>";
-  lines += "<a class='btn btn-dark' href='javascript:destroyCompanyFinal(" +emplID + "," + compID + "," + menuBoxID +  ")'>I'm Sure.</a>"
+  lines += "<a class='btn btn-dark' href='javascript:destroyCompanyFinal(" + emplID + "," + compID + "," + menuBoxID + ")'>I'm Sure.</a>"
   lines += '</th>';
   document.getElementById('menuBox' + menuBoxID).innerHTML = lines;
   document.getElementById('row' + menuBoxID).style.display = "";
 }
-function destroyCompanyFinal(emplID,compID,menuBoxID){
+
+function destroyCompanyFinal(emplID, compID, menuBoxID) {
   closeMenuBox();
 }
 
-function openLeaveCompanyBox(emplID,compID,menuBoxID,power){
+function openLeaveCompanyBox(emplID, compID, menuBoxID, power) {
   closeMenuBox();
   var lines = "";
-  if (power == 2){
+  if (power == 2) {
     lines += " If you left the company, there would no longer be an owner. <br> Either choose to confer ownership to someone else or destroy the company.";
-  }else{
+  } else {
     lines += '<br><form action="/employee/' + emplID + '" method="POST">';
     lines += '<input type="hidden" name="cid" value="' + compID + '">';
     lines += '<input type="hidden" name="contract" value="leaveCompany">';
@@ -214,7 +216,7 @@ function openLeaveCompanyBox(emplID,compID,menuBoxID,power){
   document.getElementById('row' + menuBoxID).style.display = "";
 }
 
-function openRemoveFromCompanyBox(emplID,compID,menuBoxID) {
+function openRemoveFromCompanyBox(emplID, compID, menuBoxID) {
   closeMenuBox();
   var lines = '<th scope="col">';
   lines += '<br><form action="/employee/' + emplID + '" method="POST">';
@@ -240,20 +242,20 @@ function openRemoveFromCompanyBox(emplID,compID,menuBoxID) {
 
 
 
-function addEventAllowance(){
+function addEventAllowance() {
   //if the user has sufficent power permit the event to be companywide
   // read the json and see if the value of the select is in it
-    document.getElementById("range").innerHTML = "";
+  document.getElementById("range").innerHTML = "";
   var arr = JSON.parse(mysqlres);
   var truth = false;
-  for (var i = 0; i < arr.length; i++){
-    if (arr[i].companyID == parseInt(document.getElementById('uses').value)){
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i].companyID == parseInt(document.getElementById('uses').value)) {
       truth = true;
       break;
     }
   }
   console.log(truth);
-  if (truth){
+  if (truth) {
     var lines = "<label> Who will see this message? </label><br>"
     lines += "<select name='range'>";
     lines += "<option value='1'> Only Me </>";
