@@ -66,3 +66,7 @@ input:checked + .slider:before {
   background-color: pink;
   width: 100%
 }
+
+h1,h2{
+  text-align: center
+}

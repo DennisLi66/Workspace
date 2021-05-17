@@ -1545,7 +1545,6 @@ app.route("/todo")
     }
   })
 
-
 // For All Companies
 app.get("/calendar", function(req, res) {
   res.render("calendar");

@@ -1,20 +1,31 @@
-<% if (!fName) { %>
-<a href='/'> Home </a>
-<% } %>
-<% if (!fName){ %>
-<a href='/register'> Register </a>
-<% } %>
-<% if (!fName) { %>
-<a href="/login"> Login </a>
-<% } %>
-<% if (fName) { %>
-<a href="/dashboard"> Dashboard </a>
-<% } %>
-<% if (fName) { %>
-<a href="/dashboard/changeCompany"> Switch Company </a>
-<% } %>
-<% if (fName){ %>
-<a href="/logout"> Logout </a>
-<% } %>
 
-<br>
+<nav class="navbar navbar-expand-lg fixed-top navbar-light bg-light">
+  <a class="navbar-brand" style="padding-left:10px" href="/">Workspace</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarTogglerDemo02">
+    <ul class="navbar-nav ml-auto" style="padding-left:10px">
+      <% if (!fName){ %>
+      <li class="nav-item">
+        <a class="nav-link" href="/">Home</a>
+      </li>
+      <% } %>
+      <% if (!fName){ %>
+      <a class="nav-link" href="/register">Register</a>
+      <% } %>
+      <% if (!fName) { %>
+              <a class="nav-link" href="/login">Login</a>
+      <% } %>
+      <% if (fName) { %>
+      <a class="nav-link" href="/dashboard"> Dashboard </a>
+      <% } %>
+      <% if (fName) { %>
+      <a class="nav-link" href="/dashboard/changeCompany"> Switch Company </a>
+      <% } %>
+      <% if (fName){ %>
+      <a class="nav-link" href="/logout"> Logout </a>
+      <% } %>
+    </ul>
+  </div>
+</nav>
