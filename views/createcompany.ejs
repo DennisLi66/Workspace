@@ -3,11 +3,27 @@
 <% if (errorMsg){ %>
 <%= errorMsg %>
 <% } %>
-<form action='/dashboard/create' method='POST'>
-  <label for='cname'>What is the name of your company? </label>
-  <input type="text" name='cname' required>
-  <input type='hidden' name='userID' value='<%= userID %>'>
-  <button type="submit" class="btn btn-light">Create Company</button>
-</form>
-
+<h2> Creating a Company Workspace </h2><br>
+<div class="bodyText">
+  <form action='/dashboard/create' method='POST'>
+    <label for='cname'>What is the name of your company? </label><br><br>
+    <input type="text" name='cname' required>
+    <input type='hidden' name='userID' value='<%= userID %>'><br><br>
+    <button type="submit" class="btn btn-dark">Create Company</button>
+  </form>
+  <br>
+  <br>
+  <div class="card">
+    <div class="card-header">
+      <h3> Company Features </h3>
+    </div>
+    <div class="card-body">
+      <ul>
+        <li> Manage employees with adminship and role assignment </li>
+        <li> Add announcements for your employees to see</li>
+        <li> Add events to your employee's to-do lists</li>
+      </ul>
+    </div>
+  </div>
+</div>
 <%- include('partials/footer') %>

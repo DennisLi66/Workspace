@@ -61,7 +61,7 @@
 
 
   <% } %>
-  <% if (announcements.length > 10){ %>
+  <% if (announcements && announcements.length > 10){ %>
   <button onclick="javascript:next10(<%= power %>)"> Next 10 Announcements </button>
   <% }  %>
 </div>

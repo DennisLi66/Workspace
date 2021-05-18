@@ -52,6 +52,8 @@ Finish Personal Announcements Page
 Finish Employees page - Pagination For Employees/Search By Name, Search By Title, Search By Heirarchy (can make the headers buttons)
 Finish Employee Page
 
+ADD events to dashboard as well
+
 IF OWNER:
  Employees Page: Change Title or Hierarchy or fire employee
  EMPLOYEE PAGE: Pass Ownership to

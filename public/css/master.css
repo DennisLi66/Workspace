@@ -67,6 +67,10 @@ input:checked + .slider:before {
   width: 100%
 }
 
-h1,h2{
+h1,h2,h3{
+  text-align: center
+}
+
+.bodyText{
   text-align: center
 }

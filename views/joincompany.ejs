@@ -6,11 +6,33 @@
 <% if (posiMsg){ %>
 <%= posiMsg %>
 <% } %>
+
+<h2> Joining a Company Workspace </h2><br>
+<div class="bodyText">
 <form action='/dashboard/join' method='POST'>
-  <label for='cname'>Please enter the code assigned to you from the company.</label><br>
-  <input type="text" name='code' id='code' required><br>
-  <button type="submit" class="btn btn-light">Join Company</button>
+  <label for='cname'>Please enter the code assigned to you from the company.</label><br><br>
+  <input type="text" name='code' id='code' required><br><br>
+  <button type="submit" class="btn btn-dark">Join Company</button>
 </form>
+<br>
+
+<div class="card">
+  <div class="card-header">
+    <h3> Company Features </h3>
+  </div>
+  <div class="card-body">
+    <ul>
+      <li> Manage employees with adminship and role assignment </li>
+      <li> Add announcements for your employees to see</li>
+      <li> Add events to your employee's to-do lists</li>
+    </ul>
+  </div>
+</div>
+
+</div>
+
+
+
 
 
 <%- include('partials/footer') %>
