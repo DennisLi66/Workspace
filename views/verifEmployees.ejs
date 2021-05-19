@@ -3,7 +3,7 @@
 <%- include('partials/returnCompany') %>
 
 <h2>Verification</h2>
-
+<div class="bodyText">
 <h4>Employee verification</h4>
 <% if (ndAppr && ndAppr.length > 0){ %>
 <table class='table'>
@@ -84,4 +84,6 @@ There are no employees that need verification.
 <% } else {%>
 There are no associated join links.
 <% } %>
+
+</div>
 <%- include('partials/footer') %>

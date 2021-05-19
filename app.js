@@ -463,23 +463,26 @@ app.route("/dashboard/company/:cnumber")
       left join company
       on company.companyID = employeesInCompany.companyID
       WHERE company.companyID = ? AND userID = ?;
+      select * from joinApproval left join users on users.userID = joinApproval.userID WHERE companyID = ?;
+
       `; // FIX THIS: Query will later need to accomadate a drop down menu for all associated companies
-      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id], function(error, results, fields) {
+      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id,req.params.cnumber], function(error, results, fields) {
         if (error) {
           //redirect to basic dashboard
           console.log(error);
           res.redirect("/dashboard/company/" + req.params.cnumber);
         } else {
           if (results.length > 0) {
-            var power = results[0].power;
+            var power = results[0][0].power;
             res.render('companydashboard', {
               errorMsg: null,
               posiMsg: null,
               power: power,
               fName: req.cookies.userData.fName,
               cid: req.params.cnumber,
-              cName: results[0].cName,
-              banner: 'Workspace: Company Dashboard'
+              cName: results[0][0].cName,
+              banner: 'Workspace: Company Dashboard',
+              thoseWhoNeedVerification: results[1].length
             })
           }
         }

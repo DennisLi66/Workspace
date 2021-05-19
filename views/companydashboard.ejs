@@ -5,10 +5,27 @@
 <% } %>
 <h1><%= cName %></h1>
 
+<div class="bodyText">
+
 <% if (power == 1 || power == 2){%>
-<a href='<%='/dashboard/company/'  + cid + '/createjoin'%>' class="btn btn-info">Create a join link</a>
-<a href='<%='/dashboard/company/'  + cid + '/verify'%>' class="btn btn-info">Verify Links</a>
+<h2> Handling Join Links </h2>
+<% if (thoseWhoNeedVerification == 0){ %>
+  Currently, no employees need verification.
+  <% } else if (thoseWhoNeedVerification == 1){ %>
+    There is 1 employee who needs verification.
+    <% } else { %>
+      There are <% thoseWhoNeedVerification %> employees who need verification.
+  <%  } %>
+<br><br>
+  <a href='<%='/dashboard/company/'  + cid + '/createjoin'%>' class="btn btn-info">Create a join link</a>
+  <a href='<%='/dashboard/company/'  + cid + '/verify'%>' class="btn btn-info">Verify Links</a>
 <% } %>
-<a href='<%='/announcements/'  + cid %>' class="btn btn-info">View Announcements</a>
-<a href='<%='/employees/'  + cid %>' class="btn btn-info">View Employees</a>
+<h2> Announcements </h2>
+<a href='<%='/announcements/'  + cid %>' class="btn btn-info">View Announcements</a><br>
+<h2> Employees </h2>
+<a href='<%='/employees/'  + cid %>' class="btn btn-info">View Employees</a><br>
+
+
+</div>
+
 <%- include('partials/footer') %>
