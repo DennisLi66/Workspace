@@ -464,9 +464,10 @@ app.route("/dashboard/company/:cnumber")
       on company.companyID = employeesInCompany.companyID
       WHERE company.companyID = ? AND userID = ?;
       select * from joinApproval left join users on users.userID = joinApproval.userID WHERE companyID = ?;
+      SELECT * FROM announcements left join users on users.userID = announcements.authorID WHERE companyID = ? ORDER BY id DESC LIMIT 5;
 
       `; // FIX THIS: Query will later need to accomadate a drop down menu for all associated companies
-      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id,req.params.cnumber], function(error, results, fields) {
+      connection.query(sQuery, [req.params.cnumber, req.cookies.userData.id,req.params.cnumber,req.params.cnumber], function(error, results, fields) {
         if (error) {
           //redirect to basic dashboard
           console.log(error);
@@ -482,7 +483,8 @@ app.route("/dashboard/company/:cnumber")
               cid: req.params.cnumber,
               cName: results[0][0].cName,
               banner: 'Workspace: Company Dashboard',
-              thoseWhoNeedVerification: results[1].length
+              thoseWhoNeedVerification: results[1].length,
+              announcements: results[2]
             })
           }
         }

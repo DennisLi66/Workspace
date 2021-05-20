@@ -6,6 +6,8 @@
   var mysqlres = '<%- JSON.stringify(pComps) %>'
 </script>
 
+<div class="bodyText">
+
 <form action="/addEvent" method="POST">
   <label for="title"> Title: </label><br>
   <input type="text" name="title" required><br>
@@ -22,8 +24,10 @@
   <label for="start"> Start Date: </label><br>
   <input type="datetime-local" name="start" required><br>
   <label for="end"> End Date: </label><br>
-  <input type="datetime-local" name="end" required><br>
+  <input type="datetime-local" name="end" required><br><br>
 <button type="submit" class="btn btn-danger">Add Event</button>
 </form>
+
+</div>
 
 <%- include('partials/footer') %>
